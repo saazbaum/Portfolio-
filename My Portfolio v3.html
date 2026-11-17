@@ -1,0 +1,2323 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="My Port">
+<meta name="theme-color" content="#070A13">
+<title>My Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #070A13;
+  --card: rgba(17, 24, 39, 0.72);
+  --card-solid: #111827;
+  --c2: rgba(30, 41, 59, 0.78);
+  --c2-solid: #1e293b;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-hi: rgba(255, 255, 255, 0.16);
+  --txt: #f8fafc;
+  --mut: #94a3b8;
+  --g: #34d399;
+  --r: #fb7185;
+  --a: #6366f1;
+  --glow-a: rgba(99, 102, 241, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--txt);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Text", "Noto Sans Thai", sans-serif;
+  margin: 0;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* Ambient Vibrant Background Orbs */
+body::before, body::after {
+  content: "";
+  position: fixed;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  filter: blur(110px);
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.45;
+}
+body::before {
+  top: -100px;
+  left: -80px;
+  background: radial-gradient(circle, #4f46e5, #0ea5e9);
+}
+body::after {
+  bottom: 10%;
+  right: -100px;
+  background: radial-gradient(circle, #ec4899, #8b5cf6);
+}
+
+body {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: calc(env(safe-area-inset-top) + 14px) 14px calc(106px + env(safe-area-inset-bottom));
+  -webkit-text-size-adjust: 100%;
+  transition: padding-bottom 0.3s ease;
+}
+body.nav-hidden {
+  padding-bottom: calc(34px + env(safe-area-inset-bottom));
+}
+
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 8px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6366f1, #ec4899, #f59e0b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+  flex: none;
+}
+h1 {
+  font-size: 21px;
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  background: linear-gradient(95deg, #ffffff 10%, #c7d2fe 55%, #f9a8d4 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hr {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+.ib {
+  background: var(--c2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--line);
+  color: var(--txt);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+}
+.ib:active {
+  transform: scale(0.92);
+}
+.ib.active-btn {
+  border-color: #818cf8;
+  background: rgba(99, 102, 241, 0.22);
+  color: #c7d2fe;
+}
+.live {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--mut);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  padding: 6px 11px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--mut);
+}
+.dot.on {
+  background: var(--g);
+  box-shadow: 0 0 8px var(--g);
+  animation: pl 1.6s infinite;
+}
+@keyframes pl { 50% { opacity: 0.3; } }
+
+/* Hero Card */
+.hero {
+  position: relative;
+  background: linear-gradient(135deg, rgba(49, 46, 129, 0.78) 0%, rgba(17, 24, 39, 0.88) 50%, rgba(88, 28, 135, 0.65) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(129, 140, 248, 0.32);
+  border-radius: 24px;
+  padding: 20px;
+  margin-bottom: 14px;
+  box-shadow: 0 18px 42px -15px rgba(79, 70, 229, 0.55);
+  overflow: hidden;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.25), transparent 70%);
+  pointer-events: none;
+}
+.lbl {
+  color: #cbd5e1;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.seg {
+  display: inline-flex;
+  background: rgba(7, 10, 19, 0.7);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 3px;
+}
+.seg button {
+  background: none;
+  border: 0;
+  color: var(--mut);
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.seg button.on {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.45);
+}
+.big {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin: 8px 0 4px;
+  background: linear-gradient(90deg, #ffffff 20%, #e0e7ff 70%, #fbcfe8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+.bar {
+  display: flex;
+  height: 11px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 16px 0 14px;
+  background: rgba(7, 10, 19, 0.65);
+  gap: 2.5px;
+  padding: 1.5px;
+  border: 1px solid var(--line);
+}
+.bar div {
+  border-radius: 4px;
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.legend {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+}
+.legend div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sw {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
+}
+.simtag {
+  display: none;
+  font-size: 11px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  color: #fff;
+  border-radius: 8px;
+  padding: 2px 8px;
+  margin-left: 6px;
+}
+
+/* KPI Grid */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 9px;
+  margin-bottom: 14px;
+}
+@media (min-width: 620px) {
+  .kpis { grid-template-columns: repeat(3, 1fr); }
+}
+.kpi {
+  background: linear-gradient(155deg, color-mix(in srgb, var(--k) 20%, rgba(17, 24, 39, 0.85)), rgba(17, 24, 39, 0.72) 75%);
+  backdrop-filter: blur(14px);
+  border: 1px solid color-mix(in srgb, var(--k) 35%, var(--line));
+  border-top: 3px solid var(--k);
+  border-radius: 18px;
+  padding: 13px;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.2s ease;
+}
+.kpi:active {
+  transform: scale(0.97);
+}
+.kpi small {
+  color: var(--k);
+  font-weight: 700;
+  font-size: 11.5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.kpi b {
+  font-size: 16px;
+  font-weight: 700;
+  display: block;
+  margin: 4px 0 2px;
+  word-break: break-all;
+  font-variant-numeric: tabular-nums;
+}
+.kpi span {
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+@media (max-width: 619px) {
+  .kpis .kpi:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+.chip-bar.f { margin-bottom: 10px; }
+
+/* Glass Box & Collapsible Headers */
+.box {
+  background: var(--card);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.6);
+}
+.bt {
+  font-size: 14.5px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.bt-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.bt-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #38bdf8, #818cf8, #f472b6);
+  flex: none;
+  box-shadow: 0 0 8px rgba(129, 140, 248, 0.7);
+}
+.bt-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+.tog-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line);
+  color: var(--mut);
+  border-radius: 9px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+.tog-btn:hover, .tog-btn:active {
+  background: rgba(99, 102, 241, 0.2);
+  color: #e0e7ff;
+  border-color: rgba(129, 140, 248, 0.4);
+}
+.tog-btn svg {
+  transition: transform 0.25s ease;
+}
+.box.collapsed .tog-btn svg {
+  transform: rotate(-90deg);
+}
+.box.collapsed .bt {
+  margin-bottom: 0;
+}
+.box-body {
+  transition: opacity 0.25s ease;
+}
+.box.collapsed .box-body {
+  display: none;
+}
+
+/* Infographic Cards */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+@media (min-width: 620px) {
+  .info-grid { grid-template-columns: repeat(4, 1fr); }
+}
+.info-card {
+  background: linear-gradient(160deg, rgba(30, 41, 59, 0.65), rgba(15, 23, 42, 0.85));
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+.info-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: var(--mut);
+  font-weight: 600;
+}
+.info-val {
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+.info-sub {
+  font-size: 11px;
+  color: var(--mut);
+  line-height: 1.35;
+}
+.pill-bar {
+  height: 7px;
+  border-radius: 99px;
+  background: #0f172a;
+  overflow: hidden;
+  display: flex;
+  gap: 2px;
+}
+.pill-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+}
+
+.ch {
+  position: relative;
+  width: 100%;
+  height: 215px;
+}
+.up { color: var(--g); }
+.dn { color: var(--r); }
+.mut { color: var(--mut); }
+
+.two {
+  display: grid;
+  gap: 14px;
+}
+@media (min-width: 620px) {
+  .two { grid-template-columns: 1fr 1fr; }
+}
+
+/* Top 5 / Top 10 List Items */
+.mini {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 4px;
+  border-top: 1px solid var(--line);
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background 0.15s ease;
+}
+.mini:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+.mini:first-of-type {
+  border-top: 0;
+}
+.rank-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--mut);
+}
+.rank-1 { background: linear-gradient(135deg, #fbbf24, #d97706); color: #0b0f19; }
+.rank-2 { background: linear-gradient(135deg, #e2e8f0, #94a3b8); color: #0b0f19; }
+.rank-3 { background: linear-gradient(135deg, #fb923c, #c2410c); color: #fff; }
+.mini .n {
+  font-size: 13.5px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mini .s {
+  font-size: 11px;
+  color: var(--mut);
+  margin-top: 2px;
+}
+.mini > div:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+.mini > div:last-child {
+  text-align: right;
+  flex: none;
+  font-size: 13px;
+}
+
+/* Simulator */
+details.sim summary {
+  cursor: pointer;
+  font-size: 14.5px;
+  font-weight: 700;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+details.sim summary::-webkit-details-marker { display: none; }
+.sa { display: flex; gap: 8px; margin-top: 12px; }
+.sa select, .sa input {
+  min-width: 0;
+  background: var(--c2-solid);
+  border: 1px solid var(--line);
+  color: var(--txt);
+  border-radius: 12px;
+  padding: 11px;
+  font-size: 14px;
+}
+.sa select { flex: 1.4; }
+.sa input { flex: 1; }
+.sr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 0;
+  border-top: 1px solid var(--line);
+}
+.sr > div:first-child { flex: 1; min-width: 0; }
+.sr input {
+  width: 105px;
+  background: var(--c2-solid);
+  border: 1px solid var(--line);
+  color: var(--txt);
+  border-radius: 10px;
+  padding: 9px;
+  font-size: 14px;
+}
+.sr .ib { width: 32px; height: 32px; font-size: 13px; }
+.sw2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 12px;
+}
+.sw2 input { width: 18px; height: 18px; accent-color: #8b5cf6; }
+
+/* List & Filter View */
+.tools {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.tools input, .tools select {
+  flex: 1;
+  min-width: 0;
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--line);
+  color: var(--txt);
+  border-radius: 13px;
+  padding: 11px 12px;
+  font-size: 14.5px;
+}
+.chip-bar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+  scrollbar-width: none;
+}
+.chip-bar::-webkit-scrollbar { display: none; }
+.chip {
+  background: var(--card);
+  border: 1px solid var(--line);
+  color: var(--mut);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.chip.on {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  border-color: transparent;
+}
+.sum {
+  font-size: 13px;
+  color: var(--mut);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+.vc { display: flex; gap: 6px; }
+.vc button {
+  background: var(--c2);
+  border: 1px solid var(--line);
+  color: var(--mut);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.vc button.on {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  border-color: transparent;
+}
+
+.list.v { display: flex; flex-direction: column; gap: 10px; }
+.list.h { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+@media (min-width: 620px) { .list.h { grid-template-columns: repeat(3, 1fr); } }
+
+.card {
+  background: linear-gradient(140deg, color-mix(in srgb, var(--k, #6366f1) 13%, rgba(17, 24, 39, 0.85)), rgba(17, 24, 39, 0.72) 65%);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--line);
+  border-left: 3.5px solid var(--k, #6366f1);
+  border-radius: 18px;
+  padding: 14px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.card:active { transform: scale(0.985); opacity: 0.85; }
+.tr { display: flex; gap: 12px; align-items: center; }
+.th {
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  background: #fff;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-size: 22px;
+}
+.th.d {
+  background: color-mix(in srgb, var(--k, #6366f1) 20%, var(--c2-solid));
+  color: var(--k, #a5b4fc);
+  font-weight: 800;
+  font-size: 18px;
+}
+.th img { width: 100%; height: 100%; object-fit: contain; }
+.th.logo img { padding: 7px; }
+.nm { font-weight: 700; font-size: 15px; word-break: break-word; }
+.sub { color: var(--mut); font-size: 12px; margin-top: 3px; }
+.st {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr 1fr 0.85fr;
+  gap: 4px;
+  margin-top: 12px;
+  text-align: center;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+.st small { display: block; color: var(--mut); font-size: 10.5px; margin-bottom: 2px; }
+.st b { font-size: 12.5px; font-weight: 700; }
+
+.list.h .card { padding: 12px; }
+.list.h .tr { flex-direction: column; align-items: stretch; gap: 10px; }
+.list.h .th { width: 100%; height: auto; aspect-ratio: 1/1; border-radius: 14px; font-size: 38px; }
+.list.h .th.d { aspect-ratio: 2/1; }
+.list.h .st { grid-template-columns: 1fr; text-align: left; gap: 8px; border-top: 0; padding-top: 4px; margin-top: 4px; }
+.list.h .st > div:nth-child(n+3) { display: none; }
+.list.h .st b { font-size: 14.5px; }
+
+/* Bottom Floating Glass Navigation + Show/Hide Toggle */
+.nav-wrap {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-wrap.hidden {
+  transform: translateY(100%);
+}
+.nav {
+  max-width: 780px;
+  margin: 0 auto;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid var(--line-hi);
+  display: flex;
+  overflow-x: auto;
+  padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+  scrollbar-width: none;
+}
+.nav::-webkit-scrollbar { display: none; }
+.nav button {
+  background: none;
+  border: 0;
+  color: var(--mut);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 10.5px;
+  font-weight: 500;
+  flex: 1;
+  min-width: 52px;
+  cursor: pointer;
+  padding: 4px 2px;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+.nav button:active { transform: scale(0.92); }
+.nav .i {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.nav .on { font-weight: 700; }
+.nav [data-t=ov].on { color: #a5b4fc; }
+.nav [data-t=crypto].on { color: #38bdf8; }
+.nav [data-t=gold].on { color: #fbbf24; }
+.nav [data-t=stock].on { color: #34d399; }
+.nav [data-t=lego].on { color: #fb923c; }
+.nav [data-t=insurance].on { color: #2dd4bf; }
+.nav [data-t=gpf].on { color: #f472b6; }
+.nav [data-t=other].on { color: #c084fc; }
+
+/* Floating Dock Show Pill (when nav is hidden) */
+.dock-pill {
+  position: fixed;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  transform: translateX(-50%) translateY(80px);
+  background: rgba(30, 41, 59, 0.9);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(129, 140, 248, 0.45);
+  color: #e0e7ff;
+  border-radius: 99px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  z-index: 98;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.dock-pill.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* FAB Button */
+.fab {
+  position: fixed;
+  right: 16px;
+  bottom: calc(78px + env(safe-area-inset-bottom));
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(236, 72, 153, 0.45);
+  z-index: 100;
+  cursor: pointer;
+  transition: bottom 0.3s ease, transform 0.15s ease;
+}
+.fab:active { transform: scale(0.92); }
+body.nav-hidden .fab {
+  bottom: calc(18px + env(safe-area-inset-bottom));
+}
+
+/* Modal Sheets & Toast */
+.bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.72);
+  backdrop-filter: blur(4px);
+  display: none;
+  z-index: 200;
+}
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-width: 780px;
+  margin: 0 auto;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #111827;
+  border-top: 1px solid var(--line-hi);
+  border-radius: 26px 26px 0 0;
+  padding: 20px 16px calc(26px + env(safe-area-inset-bottom));
+  z-index: 201;
+  display: none;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.65);
+}
+.sheet.open { display: block; animation: slideUp 0.25s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.sheet h2 {
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 800;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.f { margin-bottom: 12px; }
+.f label { display: block; font-size: 12px; font-weight: 600; color: var(--mut); margin-bottom: 5px; }
+.f input, .f select {
+  width: 100%;
+  background: var(--c2-solid);
+  border: 1px solid var(--line);
+  color: var(--txt);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 15.5px;
+  -webkit-appearance: none;
+}
+.row { display: flex; gap: 8px; }
+.row > * { flex: 1; min-width: 0; }
+.btn {
+  width: 100%;
+  border: 0;
+  border-radius: 13px;
+  padding: 13px;
+  font-size: 15.5px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  margin-top: 6px;
+  cursor: pointer;
+}
+.btn.s { background: var(--c2-solid); border: 1px solid var(--line); }
+.btn.x { background: rgba(251, 113, 133, 0.12); color: var(--r); border: 1px solid rgba(251, 113, 133, 0.25); }
+.hint { font-size: 12px; color: var(--mut); margin: 6px 0; }
+.res button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: var(--c2-solid);
+  border: 1px solid var(--line);
+  color: var(--txt);
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.res img { width: 22px; height: 22px; border-radius: 50%; }
+a.lk { color: #818cf8; font-size: 13px; font-weight: 600; text-decoration: none; display: inline-block; margin: 0 0 10px; }
+
+/* Allocation Interactive Legend */
+.al { display: grid; gap: 8px; margin-top: 6px; }
+.ar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 13px;
+  background: rgba(30, 41, 59, 0.55);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.ar i { position: absolute; left: 0; bottom: 0; height: 3px; background: var(--k); border-radius: 0 3px 3px 0; }
+.ar .sw { width: 10px; height: 10px; border-radius: 3px; background: var(--k); }
+.ar .an { flex: 1; font-size: 14px; font-weight: 600; }
+.ar .ap { font-size: 13px; color: var(--k); font-weight: 700; }
+.ar .av { font-size: 13px; min-width: 78px; text-align: right; }
+.ar.on { border-color: var(--k); background: color-mix(in srgb, var(--k) 15%, rgba(30, 41, 59, 0.8)); }
+.ad { margin-top: 12px; }
+.ad:empty { display: none; }
+.adp {
+  border: 1px solid color-mix(in srgb, var(--k) 40%, var(--line));
+  background: linear-gradient(160deg, color-mix(in srgb, var(--k) 15%, rgba(17, 24, 39, 0.9)), rgba(17, 24, 39, 0.8) 70%);
+  border-radius: 18px;
+  padding: 14px;
+}
+.adh { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+.adh b { color: var(--k); font-size: 16px; }
+.adh span { font-size: 12px; color: var(--mut); }
+.ast { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.ast small { display: block; color: var(--mut); font-size: 10.5px; margin-bottom: 2px; }
+.ast b { font-size: 13.5px; }
+.aex { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.aex span { background: rgba(7, 10, 19, 0.7); border: 1px solid var(--line); border-radius: 20px; padding: 4px 10px; font-size: 11.5px; color: #cbd5e1; }
+.at { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; padding: 8px 0; border-top: 1px solid var(--line); cursor: pointer; }
+.at .n { font-size: 13.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.at .av { font-size: 12.5px; text-align: right; }
+.atb { grid-column: 1/-1; height: 5px; background: rgba(7, 10, 19, 0.8); border-radius: 3px; overflow: hidden; }
+.atb i { display: block; height: 100%; background: var(--k); border-radius: 3px; }
+
+/* Custom Toast Notification (No alert/confirm) */
+.toast {
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + 14px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(129, 140, 248, 0.5);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  z-index: 300;
+  opacity: 0;
+  transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* Detail Metrics Grid */
+.det-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.det-item {
+  background: var(--c2-solid);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px;
+}
+.det-item small { display: block; font-size: 11px; color: var(--mut); margin-bottom: 2px; }
+.det-item b { font-size: 14px; }
+
+/* ---- Historical chart ---- */
+.hbar { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+#histRange { max-width: 100%; overflow-x: auto; }
+#histRange button { padding: 4px 9px; white-space: nowrap; }
+.hsum { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 10px; }
+.hsum:empty { display: none; }
+.hsum div { background: rgba(7, 10, 19, 0.55); border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; min-width: 0; }
+.hsum small { display: block; color: var(--mut); font-size: 10.5px; margin-bottom: 2px; }
+.hsum b { font-size: 13px; overflow-wrap: anywhere; }
+.hnote { font-size: 12px; color: var(--mut); line-height: 1.6; margin-top: 4px; }
+.hnote summary { cursor: pointer; font-weight: 600; }
+
+/* ---- Mobile fit fixes: keep every section inside the screen width ---- */
+html, body { max-width: 100%; }
+body { overflow-x: clip; }
+.two { grid-template-columns: minmax(0, 1fr); }
+.kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.info-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 620px) {
+  .two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .info-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.two > *, .box, .hero, .card, .kpi, .info-card, .adp { min-width: 0; max-width: 100%; }
+.bt { flex-wrap: wrap; row-gap: 8px; }
+.bt-left { flex: 1 1 150px; }
+.bt-actions { margin-left: auto; }
+.ch { overflow: hidden; }
+.ch canvas { max-width: 100%; }
+.ar .an { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ast { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ast b, .st b, .at .av { overflow-wrap: anywhere; }
+.st { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 0.85fr); }
+@media (max-width: 480px) {
+  header { gap: 6px; }
+  .hr { gap: 5px; }
+  .ib { width: 34px; height: 34px; font-size: 15px; }
+  h1 { font-size: 19px; white-space: nowrap; }
+  .brand { gap: 8px; min-width: 0; }
+  .brand-logo { width: 32px; height: 32px; border-radius: 11px; }
+  .live { padding: 5px 9px; }
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<header>
+  <div class="brand">
+    <div class="brand-logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+      </svg>
+    </div>
+    <h1>My Portfolio</h1>
+  </div>
+  <div class="hr">
+    <div class="live"><span class="dot" id="dot"></span><span id="status">Ready</span></div>
+    <button class="ib" id="btnNavTog" aria-label="ซ่อน/แสดงแถบเมนู" title="ซ่อน/แสดงแถบเมนูด้านล่าง">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 15h18"/></svg>
+    </button>
+    <button class="ib" id="btnEye" aria-label="ซ่อน/แสดงยอดเงิน" title="ซ่อน/แสดงยอดเงิน"></button>
+    <button class="ib" id="btnRef" aria-label="รีเฟรช" title="รีเฟรชราคา">↻</button>
+    <button class="ib" id="btnSet" aria-label="ตั้งค่า" title="ตั้งค่า">⚙︎</button>
+  </div>
+</header>
+
+<div id="vOv">
+  <!-- Hero Total Card -->
+  <section class="hero">
+    <div class="lbl">
+      <span>มูลค่าพอร์ตรวม<span class="simtag" id="simTag">จำลองราคา</span></span>
+      <div class="seg" id="ccySeg"><button data-c="USD">USD</button><button data-c="THB">THB</button></div>
+    </div>
+    <div class="big" id="total">–</div>
+    <div id="gain"></div>
+    <div id="chg24" class="mut" style="font-size:13px;margin-top:4px"></div>
+    <div class="bar" id="bar"></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <!-- Category KPI Cards -->
+  <div class="kpis" id="kpis"></div>
+
+  <!-- Infographic Insights (Collapsible) -->
+  <div class="box" data-sec="info">
+    <div class="bt">
+      <div class="bt-left"><span class="bt-dot"></span><span>Infographics สรุปข้อมูลเชิงลึกพอร์ต</span></div>
+      <div class="bt-actions">
+        <button type="button" class="tog-btn" data-tog="info"><span>ซ่อน</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      </div>
+    </div>
+    <div class="box-body">
+      <div class="chip-bar f" id="infoChips"></div>
+      <div class="info-grid" id="infoGrid"></div>
+    </div>
+  </div>
+
+  <!-- Historical Line Chart (Collapsible) -->
+  <div class="box" data-sec="hist">
+    <div class="bt">
+      <div class="bt-left"><span class="bt-dot"></span><span>กราฟมูลค่าพอร์ตย้อนหลัง</span></div>
+      <div class="bt-actions">
+        <button type="button" class="tog-btn" data-tog="hist"><span>ซ่อน</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      </div>
+    </div>
+    <div class="box-body">
+      <div class="chip-bar f" id="histChips"></div>
+      <div class="tools" id="histAssetRow" style="display:none"><select id="histAsset"></select></div>
+      <div class="hbar">
+        <div class="seg" id="histRange"><button data-r="1M">1M</button><button data-r="3M">3M</button><button data-r="6M">6M</button><button data-r="1Y">1Y</button><button data-r="3Y">3Y</button><button data-r="5Y">5Y</button><button data-r="MAX">ทั้งหมด</button></div>
+      </div>
+      <div class="hsum" id="histSum"></div>
+      <div class="ch"><canvas id="cHist"></canvas></div>
+      <div class="chip-bar f" id="histOpts" style="margin-top:10px"></div>
+      <p class="hint" id="histNote"></p>
+      <details class="hnote"><summary>วิธีคำนวณ</summary>
+        <div>มูลค่า = จำนวนที่ถืออยู่ปัจจุบัน × ราคาตลาดย้อนหลังในแต่ละวัน (ไม่รวมการซื้อ/ขายจริงในอดีต) รายการที่ระบุวันที่ซื้อจะเริ่มนับตั้งแต่วันนั้น ส่วนรายการที่ไม่ได้ระบุวันที่จะนับตลอดช่วง<br>
+        Crypto/ทอง: ราคาปิดรายวันจาก Binance (สำรอง CoinGecko ย้อนหลัง 1 ปี) • หุ้น: Twelve Data (ถ้าใส่ API key ในตั้งค่า) หรือ Binance Futures เท่าที่มีประวัติ<br>
+        LEGO/กบข./ประกัน/อื่นๆ ไม่มีราคาตลาด จึงประมาณเป็นเส้นตรงจากต้นทุนณวันที่ซื้อไปถึงมูลค่าปัจจุบัน</div>
+      </details>
+    </div>
+  </div>
+
+  <div class="two">
+    <!-- Asset Allocation Doughnut (Collapsible) -->
+    <div class="box" style="grid-column:1/-1" data-sec="alloc">
+      <div class="bt">
+        <div class="bt-left"><span class="bt-dot"></span><span>สัดส่วนสินทรัพย์</span></div>
+        <div class="bt-actions">
+          <span class="mut" style="font-size:11px;font-weight:500">แตะเพื่อเจาะลึก</span>
+          <button type="button" class="tog-btn" data-tog="alloc"><span>ซ่อน</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        </div>
+      </div>
+      <div class="box-body">
+        <div class="ch" style="height:260px"><canvas id="cDon"></canvas></div>
+        <div class="al" id="allocLeg"></div>
+        <div class="ad" id="allocDet"></div>
+      </div>
+    </div>
+
+    <!-- LEGO Themes Bar Chart (Collapsible) -->
+    <div class="box" style="grid-column:1/-1" data-sec="theme">
+      <div class="bt">
+        <div class="bt-left"><span class="bt-dot"></span><span id="themeTitle">แยกตามประเภท: ทุน vs มูลค่า</span></div>
+        <div class="bt-actions">
+          <button type="button" class="tog-btn" data-tog="theme"><span>ซ่อน</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        </div>
+      </div>
+      <div class="box-body">
+        <div class="chip-bar f" id="themeChips"></div>
+        <div class="ch" id="themeWrap"><canvas id="cTheme"></canvas></div>
+        <p class="hint" id="themeNote"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top 5 / Top 10 Rankings (Collapsible + Expandable Count) -->
+  <div class="two">
+    <div class="box" data-sec="topv">
+      <div class="bt">
+        <div class="bt-left"><span class="bt-dot"></span><span id="topVTitle">มูลค่าสูงสุด 5 อันดับ</span></div>
+        <div class="bt-actions">
+          <button type="button" class="tog-btn" id="btnTopN">Top 10</button>
+          <button type="button" class="tog-btn" data-tog="topv"><span>ซ่อน</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        </div>
+      </div>
+      <div class="box-body">
+        <div class="chip-bar f" id="topVChips"></div>
+        <div id="topV"></div>
+      </div>
+    </div>
+
+    <div class="box" data-sec="topr">
+      <div class="bt">
+        <div class="bt-left"><span class="bt-dot"></span><span id="topRTitle">ผลตอบแทน 5 อันดับ</span></div>
+        <div class="bt-actions">
+          <div class="seg" id="roiSeg"><button data-m="best">สูงสุด</button><button data-m="worst">แย่สุด</button></div>
+          <button type="button" class="tog-btn" data-tog="topr"><span>ซ่อน</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        </div>
+      </div>
+      <div class="box-body">
+        <div class="chip-bar f" id="topRChips"></div>
+        <div id="topR"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- What-if Simulator -->
+  <div class="box">
+    <details class="sim" id="simBox">
+      <summary>
+        <div class="bt-left"><span class="bt-dot"></span><span>จำลองราคา (What-if Simulator)</span></div>
+        <span class="tog-btn">เปิด / ปิด</span>
+      </summary>
+      <div class="sw2"><input type="checkbox" id="simOn"><label for="simOn">เปิดใช้งานราคาจำลองกับพอร์ตหลัก</label></div>
+      <div class="sa">
+        <select id="simAsset"></select>
+        <input id="simPrice" type="number" inputmode="decimal" step="any" placeholder="ราคาเป้าหมาย ($)">
+        <button type="button" class="btn" id="simAdd" style="margin:0;width:auto;padding:0 16px">เพิ่ม</button>
+      </div>
+      <button type="button" class="btn s" id="simAll" style="margin-top:10px">เพิ่มทุกสินทรัพย์ (Crypto / ทอง / หุ้น) ที่ราคาปัจจุบัน</button>
+      <div id="simRows" style="margin-top:10px"></div>
+      <button class="btn s" id="simReset" type="button">รีเซ็ตค่าจำลองทั้งหมด</button>
+    </details>
+  </div>
+</div>
+
+<!-- Category List View -->
+<div id="vList" style="display:none">
+  <div class="tools">
+    <input id="q" type="search" placeholder="ค้นหาชื่อ / รหัสเซ็ต / ธีม">
+    <select id="sort">
+      <option value="value">มูลค่าสูงสุด</option>
+      <option value="gain">กำไร $ สูงสุด</option>
+      <option value="gainp">กำไร % สูงสุด</option>
+      <option value="days">ถือนานสุด</option>
+      <option value="name">ชื่อ A-Z</option>
+    </select>
+  </div>
+  <div class="tools" id="themeRow"><select id="themeSel"></select></div>
+  <div class="chip-bar" id="profitChips">
+    <button type="button" class="chip on" data-pf="all">ทั้งหมด</button>
+    <button type="button" class="chip" data-pf="profit">กำไร (+)</button>
+    <button type="button" class="chip" data-pf="loss">ขาดทุน (-)</button>
+    <button type="button" class="chip" data-pf="free">ได้ฟรี (ทุน 0)</button>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px">
+    <div class="sum" id="catsum"></div>
+    <div class="vc" id="vc">
+      <button data-l="v" aria-label="รายการ"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <button data-l="h" aria-label="การ์ด"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 4v16M4 12h16"/></svg></button>
+    </div>
+  </div>
+  <div class="list v" id="list"></div>
+</div>
+
+<!-- Floating Pill when Tab Bar is Hidden -->
+<button type="button" class="dock-pill" id="dockPill">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 15l-6-6-6 6"/></svg>
+  <span>แสดงแถบเมนู</span>
+</button>
+
+<!-- Bottom Glass Tab Bar -->
+<div class="nav-wrap" id="navWrap">
+  <nav class="nav">
+    <button data-t="ov"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v9h9a9 9 0 1 1-9-9z"/></svg>ภาพรวม</button>
+    <button data-t="crypto"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 8.5h4a1.8 1.8 0 0 1 0 3.5h-4m0 0h4.5a1.8 1.8 0 0 1 0 3.5H9.5M9.5 8v8"/></svg>Crypto</button>
+    <button data-t="gold"><svg class="i" viewBox="0 0 24 24"><path d="M3 18l3-7h12l3 7zM8 11l1.5-4h5L16 11"/></svg>ทอง</button>
+    <button data-t="stock"><svg class="i" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>หุ้น</button>
+    <button data-t="lego"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="10" rx="2"/><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/></svg>LEGO</button>
+    <button data-t="insurance"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg>ประกัน</button>
+    <button data-t="gpf"><svg class="i" viewBox="0 0 24 24"><path d="M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18"/></svg>กบข.</button>
+    <button data-t="other"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l9 9-9 9-9-9z"/></svg>อื่นๆ</button>
+  </nav>
+</div>
+
+<button class="fab" id="fab" aria-label="เพิ่ม">+</button>
+<div class="bg" id="bg"></div>
+
+<!-- Detail Sheet -->
+<div class="sheet" id="shDet">
+  <h2><span id="dT">รายละเอียด</span><button type="button" class="ib" data-x>✕</button></h2>
+  <div id="dC" style="font-size:14px;line-height:1.6;margin-bottom:12px"></div>
+  <div class="ch" style="height:195px;margin-bottom:14px"><canvas id="cAsset"></canvas></div>
+  <button class="btn" id="toEdit">แก้ไขข้อมูลสินทรัพย์</button>
+</div>
+
+<!-- Add/Edit Sheet -->
+<div class="sheet" id="shEdit">
+<form id="f" autocomplete="off">
+  <h2><span id="eT">เพิ่มสินทรัพย์</span><button type="button" class="ib" data-x>✕</button></h2>
+  <div class="f"><label>ประเภท</label><select name="type"><option value="crypto">Crypto</option><option value="gold">ทองคำ</option><option value="stock">หุ้น</option><option value="lego">LEGO</option><option value="insurance">ประกัน</option><option value="gpf">กบข.</option><option value="other">อื่นๆ</option></select></div>
+  <div class="f"><label>ชื่อ</label><input name="name"></div>
+  <div class="f" data-t="crypto gold stock"><label>Symbol</label><div class="row"><input name="symbol" autocapitalize="characters" placeholder="เช่น ETHFI"><button type="button" class="btn s" id="cgBtn" style="margin:0;flex:.45">ค้นหา</button></div></div>
+  <div id="cgRes" class="res" data-t="crypto gold stock"></div>
+  <div class="f" data-t="crypto gold"><label>CoinGecko ID</label><input name="cgId" placeholder="เช่น ether-fi"></div>
+  <div class="f" data-t="crypto gold stock"><label>Binance pair (ราคาเรียลไทม์ ถ้ามี)</label><input name="binance" autocapitalize="characters" placeholder="เช่น ETHFIUSDT"></div>
+  <div class="row" data-t="lego"><div class="f"><label>รหัสเซ็ต</label><input name="setNum" placeholder="76269-1"></div><div class="f"><label>ชิ้นส่วน</label><input name="pieces" inputmode="numeric"></div></div>
+  <div class="f" data-t="lego"><label>ธีม</label><input name="theme"></div>
+  <a class="lk" id="beLk" data-t="lego" target="_blank" rel="noopener">เช็กราคาบน BrickEconomy ↗</a>
+  <div class="f"><label id="lQty">จำนวน</label><input name="qty" inputmode="decimal"></div>
+  <div class="row"><div class="f" data-t="crypto gold stock lego insurance other"><label id="lCost">ราคาทุน / หน่วย ($)</label><input name="cost" inputmode="decimal" placeholder="ว่าง=ไม่ระบุ, 0=ฟรี"></div><div class="f"><label id="lPrice">ราคาปัจจุบัน / หน่วย ($)</label><input name="price" inputmode="decimal"></div></div>
+  <div class="row" data-t="gpf"><div class="f"><label>เงินต้นสะสมของท่าน (บาท)</label><input name="ep" inputmode="decimal"></div><div class="f"><label>เงินต้นจากภาครัฐ (บาท)</label><input name="gp" inputmode="decimal"></div></div>
+  <div class="f"><label>วันที่ซื้อ</label><input name="buyDate" type="date"></div>
+  <div class="f"><label>ลิงก์รูป (ไม่บังคับ)</label><input name="img" placeholder="https://..."></div>
+  <div class="f"><label>โน้ต</label><input name="note"></div>
+  <button class="btn">บันทึกข้อมูล</button>
+  <button type="button" class="btn x" id="del">ลบรายการนี้</button>
+</form>
+</div>
+
+<!-- Settings Sheet -->
+<div class="sheet" id="shSet">
+  <h2>ตั้งค่าระบบ<button type="button" class="ib" data-x>✕</button></h2>
+  <div class="f"><label>สกุลเงินที่แสดง</label><select id="ccy"><option value="USD">USD ($)</option><option value="THB">THB (฿)</option></select></div>
+  <p class="hint" id="fxInfo"></p>
+  <div class="f"><label>Finnhub API key (ราคาหุ้น US แบบสด — ขอฟรีที่ finnhub.io)</label><input id="fhKey" autocomplete="off"></div>
+  <div class="f"><label>Twelve Data API key (ราคาหุ้นย้อนหลังหลายปี — ขอฟรีที่ twelvedata.com)</label><input id="tdKey" autocomplete="off"></div>
+  <button class="btn" id="saveSet">บันทึกการตั้งค่า</button>
+  <button class="btn s" id="exp">สำรองข้อมูล (Export JSON)</button>
+  <button class="btn s" id="impBtn">นำเข้าข้อมูล (Import JSON)</button>
+  <input type="file" id="imp" accept=".json" hidden>
+  <button class="btn x" id="reset">รีเซ็ตเป็นข้อมูลเริ่มต้น</button>
+</div>
+
+<script>
+const LS = 'myport_v4', DAY = 864e5;
+const TY = {
+  crypto: { n: 'Crypto', c: '#38bdf8', i: '₿' },
+  gold: { n: 'ทองคำ', c: '#fbbf24', i: 'Au' },
+  stock: { n: 'หุ้น', c: '#34d399', i: '↗' },
+  lego: { n: 'LEGO', c: '#fb923c', i: '▦' },
+  gpf: { n: 'กบข.', c: '#f472b6', i: 'G' },
+  insurance: { n: 'ประกัน', c: '#2dd4bf', i: '☂' },
+  other: { n: 'อื่นๆ', c: '#c084fc', i: '◆' }
+};
+const KS = Object.keys(TY);
+
+// Full 65 LEGO Sets Database (100% Preserved)
+const LEGO = [
+["The Lord of the Rings: Minas Tirith","11377-1","Icons",8278,649.99,620,169],["Avengers Tower","76269-1","Avengers",5201,545.20,420,995],["The SHIELD Helicarrier","76042-1","Avengers",2996,536.55,670,2021],["Lord of the Rings: Rivendell","10316-1","Icons",6167,527.65,617,163],["The Lord of the Rings: Barad-dûr","10333-1","Icons",5471,459.99,429,152],["Sanctum Sanctorum","76218-1","The Infinity Saga",2708,448.15,239,1560],["Nintendo Entertainment System","71374-1","Super Mario",2646,383.52,207,1529],["Ninjago Minifigure Collection","5005257-1","Collectible Minifigures",25,355.09,0,1638],["Fell Beast","40693-1","Icons",269,312.56,88,154],["The Globe","21332-1","LEGO Ideas and CUUSOO",2585,291.98,180,1524],["Thor's Hammer","76209-1","The Infinity Saga",979,283.55,122,1718],["The Guardians' Ship","76193-1","The Infinity Saga",1901,205.36,176,1881],["Avenjet Space Mission","76049-1","Avengers",523,193.86,100,3828],["Nano Gauntlet","76223-1","The Infinity Saga",675,189.62,85,1682],["The Starry Night","21333-1","LEGO Ideas and CUUSOO",2316,169.99,202,1529],["Ultrasonic Showdown","70171-1","Ultra Agents",187,162.23,53,1879],["Jaws","21350-1","LEGO Ideas and CUUSOO",1497,160.06,117,152],["Grond","40893-1","Icons",307,156.78,0,169],["Iron Man","76165-1","Avengers",480,143.63,73,2052],["NASA Apollo 11 Lunar Lander","10266-1","Creator Expert",1087,127.20,125,1874],["Ayesha's Revenge","76080-1","Guardians of the Galaxy",323,121.45,70,1272],["Marvel - Complete - All Sets","71031-13","Marvel Series 1",98,115.22,62,1849],["Infinity Gauntlet","76191-1","The Infinity Saga",590,102.58,80,1881],["Battle Bus","77073-1","Fortnite",954,99.99,57,129],["Avengers Ultimate Quinjet","76126-1","Avengers",838,98.80,100,1852],["Venom","76187-1","Spider-Man",565,92.69,73,1560],["Rise of the Domo","76156-1","Super Heroes Marvel",1040,88.30,129,1846],["Black Panther: War on the Water","76214-1","Super Heroes Marvel",545,87.28,98,1496],["Taskmaster's Ambush","77905-1","Super Heroes Marvel",230,83.62,60,906],["Iron Man: Iron Monger Mayhem","76190-1","The Infinity Saga",479,82.17,42,1852],["Series 26 - Complete - All Sets","71046-13","Series 26 Minifigures",68,81.90,50,131],["Molten Man Battle","76128-1","Spider-Man",294,81.85,60,1863],["Iron Skull Sub Attack","76048-1","Avengers",335,76.22,33,3828],["Darth Vader Meditation Chamber","75296-1","Star Wars",663,74.94,50,1637],["Black Widow's Helicopter Chase","76162-1","Super Heroes Marvel",271,71.68,45,1863],["Shuri's Sunbird","76211-1","Super Heroes Marvel",355,63.56,56,1496],["Royal Talon Fighter Attack","76100-1","Super Heroes Marvel",358,60.62,54,1849],["In Arishem's Shadow","76155-1","Super Heroes Marvel",493,53.58,87,1846],["Minions Kung Fu Battle","75550-1","Minions",310,47.81,33,906],["Spider-Man at the Sanctum Workshop","76185-1","Spider-Man",355,46.40,54,1863],["Battle at the Ancient Village","76177-1","Super Heroes Marvel",400,41.73,36,1849],["Sea Serpent","40912-1","LEGO Ideas and CUUSOO",241,39.80,50,127],["Tony Stark's Sakaarian Iron Man","76194-1","Super Heroes Marvel",369,39.12,32,1849],["Minions in Gru's Lab","75546-1","Minions",87,37.27,17,1849],["Bro Thor's New Asgard","76200-1","The Infinity Saga",265,35.36,26,1849],["Captain Marvel and The Skrull Attack","76127-1","Super Heroes Marvel",307,34.81,54,1863],["Unstoppable Bike Chase","75549-1","Minions",136,34.60,20,1874],["Captain Carter & The Hydra Stomper","76201-1","Super Heroes Marvel",343,34.52,32,1849],["Escape From The Ten Rings","76176-1","Super Heroes Marvel",321,30.33,31,1849],["Time Machine from Back to the Future","77256-1","Speed Champions",357,27.99,20,122],["Classic Animation Scenes","40774-1","Disney",270,27.07,34,357],["Deviant Ambush!","76154-1","Super Heroes Marvel",197,25.94,24,1849],["Alien Space Diner","40687-1","Promotional",239,24.77,10,122],["Minions Kung Fu Training","40511-1","Minions",54,22.68,16,1846],["Black Panther Dragon Flyer","76186-1","The Infinity Saga",202,20.45,26,1852],["New York Postcard","40519-1","Creator",253,15.41,12.5,122],["Eternals' Aerial Assault","76145-1","Super Heroes Marvel",133,13.51,10,1849],["Cyber Drone","31111-1","Creator 3-in-1",113,11.37,11,1846],["Zombie Businessman","71010-13","Series 14 Minifigures",6,11.30,6,3828,2],["Captain America and Hydra Face-Off","76189-1","The Infinity Saga",49,7.44,11,1849],["Zombie Pirate","71010-2","Series 14 Minifigures",6,4.43,3,3828],["Spider Lady","71010-16","Series 14 Minifigures",7,4.24,3,3828],["Square Foot","71010-15","Series 14 Minifigures",4,4.00,3,3828],["Monster Scientist","71010-3","Series 14 Minifigures",5,2.74,3,3828],["Monster Rocker","71010-12","Series 14 Minifigures",5,2.48,3,3828]
+];
+
+const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
+const uid = () => Math.random().toString(36).slice(2, 10);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const num = v => { v = String(v ?? '').replace(/,/g, '').trim(); return v === '' ? null : +v };
+const today = () => new Date().toISOString().slice(0, 10);
+
+function toast(msg) {
+  const el = $('#toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 2400);
+}
+
+function seed() {
+  const d = n => new Date(Date.now() - n * DAY).toISOString().slice(0, 10);
+  const a = [
+    { id: uid(), type: 'crypto', name: 'ether.fi', symbol: 'ETHFI', cgId: 'ether-fi', binance: 'ETHFIUSDT', qty: 14400, cost: null, price: 0.5078 },
+    { id: uid(), type: 'gold', name: 'Tether Gold', symbol: 'XAUT', cgId: 'tether-gold', binance: 'XAUTUSDT', qty: 1.5, cost: null, price: 3824.89 }
+  ];
+  LEGO.forEach(([name, setNum, theme, pieces, val, paid, days, qty = 1]) =>
+    a.push({ id: uid(), type: 'lego', name, setNum, theme, pieces, qty, cost: paid / qty, price: val / qty, buyDate: d(days) })
+  );
+  return a;
+}
+const gpfSeed = () => ({ id: uid(), type: 'gpf', name: 'กบข. (แผนหุ้นต่างประเทศ)', qty: 4882.3078, price: 37.93, cur: 'THB', ep: 52139.10, gp: 86898.50, cost: 139037.60, note: 'ข้อมูล ณ 11/11/2569 • ผลตอบแทนเฉลี่ย 5 ปี 7.73%/ปี' });
+const STK_BN = { SPCX: 'SPCXUSDT', MSTR: 'MSTRUSDT', AAPL: 'AAPLUSDT' };
+const stkSeed = () => [['SPCX', 'SpaceX', 135.92], ['MSTR', 'Strategy', 109.73], ['AAPL', 'Apple', 350.69]].map(([symbol, name, price]) => ({ id: uid(), type: 'stock', name: name + ' (' + symbol + ')', symbol, qty: 0.04, cost: null, price, binance: STK_BN[symbol], bnf: 1 }));
+const insSeed = () => ({ id: uid(), type: 'insurance', name: 'ประกันชีวิต', qty: 1, cost: null, price: 355405, cur: 'THB', buyDate: '2020-07-23', note: 'ทุนประกัน • ครบสัญญา 23/07/2625' });
+const othSeed = () => ({ id: uid(), type: 'other', name: 'Glock 19 Gen 5', qty: 1, cost: 1290, price: 1530, buyDate: '2018-11-16' });
+const dflt = () => ({
+  insMig: 1, gpfMig: 1, stkMig: 1, othMig: 1,
+  assets: [...seed(), insSeed(), gpfSeed(), ...stkSeed(), othSeed()],
+  hist: [], set: { ccy: 'USD', thb: 34.25 },
+  tab: 'ov', sort: 'value', layout: 'v', theme: 'ALL', pfFilter: 'all',
+  sim: { on: false, p: {} }, fxAt: 0,
+  collapsed: {}, hideNav: false, topN: 5
+});
+
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem(LS));
+    if (s && s.assets) {
+      if (!s.insMig) { s.assets.push(insSeed()); s.insMig = 1; }
+      if (!s.gpfMig) { s.assets.push(gpfSeed()); s.gpfMig = 1; }
+      if (!s.othMig) { if (!s.assets.some(a => a.name === 'Glock 19 Gen 5')) s.assets.push(othSeed()); s.othMig = 1; }
+      if (!s.stkMig) { stkSeed().forEach(n => { if (!s.assets.some(a => a.type === 'stock' && a.symbol === n.symbol)) s.assets.push(n); }); s.stkMig = 1; }
+      s.assets.forEach(a => { if (a.type === 'stock' && !a.binance && STK_BN[a.symbol]) { a.binance = STK_BN[a.symbol]; a.bnf = 1; } });
+      s.assets.forEach(a => { if (a.type === 'insurance' && a.cur === 'THB' && a.price === 306384) a.price = 355405; });
+      return Object.assign(dflt(), s);
+    }
+  } catch (e) {}
+  return dflt();
+}
+
+let S = load(), editing = null, wsOn = false, rT = null, ch = {};
+const save = () => { try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} };
+
+// ---- Value Helpers ----
+const simP = a => S.sim.on && a.type !== 'lego' && a.type !== 'insurance' && a.type !== 'gpf' && S.sim.p && S.sim.p[a.id] != null ? +S.sim.p[a.id] : null;
+const px = a => { const b = simP(a) ?? (+a.price || 0); return a.cur === 'THB' ? b / S.set.thb : b; };
+const val = a => (+a.qty || 0) * px(a);
+const costT = a => a.cost == null ? null : (a.type === 'gpf' ? 1 : (+a.qty || 0)) * a.cost / (a.cur === 'THB' ? S.set.thb : 1);
+const days = a => a.buyDate ? Math.max(0, Math.floor((Date.now() - new Date(a.buyDate + 'T00:00:00')) / DAY)) : null;
+const gUSD = a => { const c = costT(a); return c == null ? -1e15 : val(a) - c; };
+const gPct = a => { const c = costT(a); return c == null ? -1e15 : c === 0 ? 1e15 : (val(a) - c) / c; };
+const cmp = (p, q) => (q > p) - (q < p);
+const cls = x => x >= 0 ? 'up' : 'dn';
+const pct = x => (x >= 0 ? '+' : '') + x.toFixed(1) + '%';
+const unitDp = p => p >= 100 ? 2 : p >= 1 ? 3 : p >= 0.01 ? 4 : 8;
+const fq = n => (+n || 0).toLocaleString('en-US', { maximumFractionDigits: 8 });
+
+function money(usd, o = {}) {
+  if (S.hide) return '••••••';
+  const th = S.set.ccy === 'THB', v = (usd || 0) * (th ? S.set.thb : 1), dp = o.dp ?? 2;
+  return (v < 0 ? '-' : o.sign ? '+' : '') + (th ? '฿' : '$') + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp });
+}
+
+function gainTxt(a) {
+  const v = val(a), c = costT(a);
+  if (c == null) return '<span class="mut">ไม่ระบุทุน</span>';
+  if (c === 0) return `<span class="up">${money(v, { sign: 1 })} (ฟรี)</span>`;
+  const g = v - c, r = v / c;
+  return `<span class="${cls(g)}">${money(g, { sign: 1 })} (${r >= 2 ? r.toFixed(1) + 'x' : pct(g / c * 100)})</span>`;
+}
+
+function imgList(a) {
+  const l = [];
+  if (a.img) l.push(a.img);
+  if (a.autoImg) l.push(a.autoImg);
+  if (a.type === 'lego' && a.setNum) l.push(`https://cdn.rebrickable.com/media/sets/${a.setNum.toLowerCase()}.jpg`);
+  if (a.type === 'stock' && a.symbol) { const q = encodeURIComponent(a.symbol); l.push(`https://assets.parqet.com/logos/symbol/${q}?format=png`, `https://financialmodelingprep.com/image-stock/${q}.png`); }
+  if (a.type === 'crypto' && a.symbol) l.push(`https://assets.coincap.io/assets/icons/${a.symbol.toLowerCase()}@2x.png`);
+  return l;
+}
+function imgFail(el) {
+  let l = []; try { l = JSON.parse(el.dataset.alt || '[]'); } catch (_) {}
+  if (l.length) { el.dataset.alt = JSON.stringify(l.slice(1)); el.src = l[0]; }
+  else { const p = el.parentNode; p.classList.add('d'); p.classList.remove('logo'); p.textContent = el.dataset.i; }
+}
+
+function card(a) {
+  const t = TY[a.type] || TY.other, c = costT(a), d = days(a), L = imgList(a), live = a.type === 'crypto' || a.type === 'gold' || (a.type === 'stock' && a.chg != null);
+  const th = `<div class="th ${a.type === 'lego' ? '' : L.length ? 'logo' : 'd'}">${L.length ? `<img src="${esc(L[0])}" data-alt="${esc(JSON.stringify(L.slice(1)))}" data-i="${t.i}" loading="lazy" referrerpolicy="no-referrer" onerror="imgFail(this)">` : t.i}</div>`;
+  const sub = a.type === 'lego' ? `${esc(a.setNum)} • ${esc(a.theme)}${a.qty > 1 ? ' • ×' + fq(a.qty) : ''}${a.pieces ? ' • ' + fq(a.pieces) + ' pcs' : ''}`
+    : a.type === 'gpf' ? `${fq(a.qty)} หน่วย • NAV ${money(px(a), { dp: 4 })}` : (live || a.type === 'stock') ? `${esc(a.symbol)} • ${fq(a.qty)} • ${money(px(a), { dp: unitDp(px(a)) })}` : `×${fq(a.qty)}${a.note ? ' • ' + esc(a.note) : ''}`;
+  const last = live ? `<small>24 ชม.</small><b class="${a.chg == null ? 'mut' : cls(a.chg)}">${a.chg == null ? '–' : pct(a.chg)}</b>` : `<small>ถือมา (วัน)</small><b>${d ?? '–'}</b>`;
+  return `<div class="card" data-id="${a.id}" style="--k:${t.c}"><div class="tr">${th}<div style="min-width:0"><div class="nm">${esc(a.name)}</div><div class="sub">${sub}</div></div></div>
+  <div class="st"><div><small>มูลค่า</small><b>${money(val(a))}</b></div><div><small>กำไร/ขาดทุน</small><b>${gainTxt(a)}</b></div><div><small>ทุน</small><b>${c == null ? '–' : c === 0 ? 'ฟรี' : money(c)}</b></div><div>${last}</div></div></div>`;
+}
+
+const mini = (a, idx, right) => `
+  <div class="mini" data-id="${a.id}">
+    <span class="rank-badge ${idx < 3 ? 'rank-' + (idx + 1) : ''}">${idx + 1}</span>
+    <div>
+      <div class="n">${esc(a.name)}</div>
+      <div class="s">${esc(TY[a.type].n)}${a.setNum || a.symbol ? ' • ' + esc(a.setNum || a.symbol) : ''}</div>
+    </div>
+    <div>${right}</div>
+  </div>`;
+
+// ---- Collapsible & Tab Bar State Sync ----
+function syncSections() {
+  S.collapsed = S.collapsed || {};
+  $$('[data-sec]').forEach(box => {
+    const key = box.dataset.sec;
+    const isCol = !!S.collapsed[key];
+    box.classList.toggle('collapsed', isCol);
+    const btnSpan = box.querySelector(`[data-tog="${key}"] span`);
+    if (btnSpan) btnSpan.textContent = isCol ? 'แสดง' : 'ซ่อน';
+  });
+}
+
+function syncNavVis() {
+  const hide = !!S.hideNav;
+  $('#navWrap').classList.toggle('hidden', hide);
+  $('#dockPill').classList.toggle('show', hide);
+  document.body.classList.toggle('nav-hidden', hide);
+  $('#btnNavTog').classList.toggle('active-btn', !hide);
+}
+
+// ---- Filter chips (shared) ----
+const presentKeys = () => KS.filter(k => S.assets.some(a => a.type === k));
+const pickOne = v => presentKeys().includes(v) ? v : 'all';
+const infoSel = () => { const ks = presentKeys(); return (S.infoSel || []).filter(k => ks.includes(k)); };
+function chipsHTML(sel, multi) {
+  const on = k => k === 'all' ? (multi ? !sel.length : sel === 'all') : (multi ? sel.includes(k) : sel === k);
+  return ['all', ...presentKeys()].map(k => `<button type="button" class="chip${on(k) ? ' on' : ''}" data-k="${k}">${k === 'all' ? 'ทั้งหมด' : TY[k].n}</button>`).join('');
+}
+
+// ---- Infographics Renderer ----
+function renderInfographics(tot, by) {
+  const sel = infoSel();
+  $('#infoChips').innerHTML = chipsHTML(sel, true);
+  const A = sel.length ? S.assets.filter(a => sel.includes(a.type)) : S.assets;
+  const selVal = A.reduce((s, a) => s + val(a), 0);
+
+  const tracked = A.filter(a => costT(a) != null);
+  const winners = tracked.filter(a => val(a) >= costT(a));
+  const winRate = tracked.length ? (winners.length / tracked.length * 100) : 0;
+
+  const legos = A.filter(a => a.type === 'lego');
+  const totalBricks = legos.reduce((sum, a) => sum + ((+a.pieces || 0) * (+a.qty || 1)), 0);
+
+  const riskVal = A.filter(a => a.type === 'crypto' || a.type === 'stock').reduce((s, a) => s + val(a), 0);
+  const riskPct = selVal > 0 ? (riskVal / selVal * 100) : 0;
+  const safePct = selVal > 0 ? 100 - riskPct : 0;
+
+  const dated = A.map(a => days(a)).filter(d => d != null);
+  const avgDays = dated.length ? Math.round(dated.reduce((s, d) => s + d, 0) / dated.length) : 0;
+  const avgYears = (avgDays / 365).toFixed(1);
+
+  const shareOfAll = tot > 0 ? selVal / tot * 100 : 0;
+  const card2 = legos.length ? `
+    <div class="info-card">
+      <div class="info-head">
+        <span>LEGO Bricks สะสม</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2.2"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M7 8V5h3v3M14 8V5h3v3"/></svg>
+      </div>
+      <div class="info-val" style="color:#fb923c">${totalBricks.toLocaleString()}</div>
+      <div class="pill-bar"><i style="width:100%;background:linear-gradient(90deg,#f97316,#fbbf24)"></i></div>
+      <div class="info-sub">ชิ้นส่วนรวมจาก ${legos.length} เซ็ตในคอลเลกชัน</div>
+    </div>` : `
+    <div class="info-card">
+      <div class="info-head">
+        <span>มูลค่าที่เลือก</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2.2"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>
+      </div>
+      <div class="info-val" style="color:#fb923c;font-size:19px">${money(selVal, { dp: 0 })}</div>
+      <div class="pill-bar"><i style="width:${Math.min(100, shareOfAll)}%;background:linear-gradient(90deg,#f97316,#fbbf24)"></i></div>
+      <div class="info-sub">${A.length} รายการ • ${shareOfAll.toFixed(0)}% ของพอร์ต</div>
+    </div>`;
+
+  $('#infoGrid').innerHTML = `
+    <div class="info-card">
+      <div class="info-head">
+        <span>อัตราชนะ (Win Rate)</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <div class="info-val" style="color:#34d399">${tracked.length ? winRate.toFixed(0) + '%' : '–'}</div>
+      <div class="pill-bar"><i style="width:${winRate}%;background:linear-gradient(90deg,#10b981,#34d399)"></i></div>
+      <div class="info-sub">${tracked.length ? `กำไร ${winners.length} จาก ${tracked.length} รายการที่ระบุทุน` : 'ยังไม่มีรายการที่ระบุทุน'}</div>
+    </div>
+
+    ${card2}
+
+    <div class="info-card">
+      <div class="info-head">
+        <span>เสี่ยง vs มั่นคง/สะสม</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div class="info-val" style="font-size:15px"><span style="color:#38bdf8">${riskPct.toFixed(0)}%</span> : <span style="color:#fbbf24">${safePct.toFixed(0)}%</span></div>
+      <div class="pill-bar">
+        <i style="width:${riskPct}%;background:#38bdf8"></i>
+        <i style="width:${safePct}%;background:#fbbf24"></i>
+      </div>
+      <div class="info-sub">Crypto+หุ้น เทียบ ทอง/LEGO/กบข./ประกัน/อื่นๆ</div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-head">
+        <span>อายุถือครองเฉลี่ย</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="info-val" style="color:#c084fc">${dated.length ? avgYears + ' ปี' : '–'}</div>
+      <div class="pill-bar"><i style="width:${Math.min(100, avgDays / 20)}%;background:linear-gradient(90deg,#8b5cf6,#ec4899)"></i></div>
+      <div class="info-sub">${dated.length ? `เฉลี่ย ${avgDays.toLocaleString()} วัน (${dated.length} รายการ)` : 'ยังไม่มีรายการที่ระบุวันที่ซื้อ'}</div>
+    </div>
+  `;
+}
+
+// ---- Historical portfolio value ----
+const PXK = 'myport_px_v1';
+let PXC = {}; try { PXC = JSON.parse(localStorage.getItem(PXK)) || {}; } catch (e) {}
+const savePX = () => { try { localStorage.setItem(PXK, JSON.stringify(PXC)); } catch (e) {} };
+const HS = { busy: false, tried: {}, err: {}, ver: 0, msg: '', sig: null };
+const eday = ms => Math.floor(ms / DAY);
+const dayOf = iso => Math.floor(Date.parse(iso + 'T00:00:00Z') / DAY);
+const isoOf = d => new Date(d * DAY).toISOString().slice(0, 10);
+const isMkt = a => a.type === 'crypto' || a.type === 'gold' || a.type === 'stock';
+const pxSym = a => a.binance || (a.symbol ? String(a.symbol).toUpperCase() + 'USDT' : '');
+const pxKey = a => !isMkt(a) ? null : a.type === 'stock' ? 'stock:' + (a.symbol || a.name) : 'c:' + (pxSym(a) || a.cgId || a.name);
+const curV = a => (+a.qty || 0) * (a.cur === 'THB' ? (+a.price || 0) / S.set.thb : (+a.price || 0));
+const dedupe = d => { const m = new Map(); d.forEach(([k, v]) => { if (isFinite(v) && v > 0) m.set(k, v); }); return [...m.entries()].sort((x, y) => x[0] - y[0]); };
+
+async function klines(base, sym, limit) {
+  const out = []; let st = 0;
+  for (let i = 0; i < 12; i++) {
+    const r = await fetch(`${base}?symbol=${encodeURIComponent(sym)}&interval=1d&limit=${limit}&startTime=${st}`);
+    if (!r.ok) { if (!out.length) throw new Error('HTTP ' + r.status); break; }
+    const d = await r.json(); if (!Array.isArray(d) || !d.length) break;
+    d.forEach(k => out.push([eday(k[0]), +k[4]]));
+    if (d.length < limit) break;
+    st = d[d.length - 1][0] + DAY;
+  }
+  return out;
+}
+async function cgHist(id) {
+  const j = await (await fetch(`https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=365&interval=daily`)).json();
+  if (!j.prices) throw new Error('CoinGecko');
+  return j.prices.map(q => [eday(q[0]), q[1]]);
+}
+async function twelveHist(sym) {
+  const j = await (await fetch(`https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(sym)}&interval=1day&outputsize=5000&order=ASC&apikey=${encodeURIComponent(S.set.twelve)}`)).json();
+  if (j.status === 'error' || !Array.isArray(j.values)) throw new Error(j.message || 'Twelve Data');
+  return j.values.map(v => [dayOf(String(v.datetime).slice(0, 10)), +v.close]);
+}
+async function fetchHist(a) {
+  const sym = pxSym(a), tries = [];
+  const FUT = ['Binance Futures', () => klines('https://fapi.binance.com/fapi/v1/klines', sym, 1500)];
+  if (a.type === 'stock') {
+    if (S.set.twelve && a.symbol) tries.push(['Twelve Data', () => twelveHist(a.symbol)]);
+    if (sym) tries.push(FUT);
+  } else {
+    if (sym) tries.push(['Binance', () => klines('https://api.binance.com/api/v3/klines', sym, 1000)], FUT);
+    if (a.cgId) tries.push(['CoinGecko (1 ปี)', () => cgHist(a.cgId)]);
+  }
+  let last;
+  for (const [src, fn] of tries) { try { const d = dedupe(await fn()); if (d.length > 1) return { src, d }; } catch (e) { last = e; } }
+  throw last || new Error('ไม่มีแหล่งราคา');
+}
+
+async function histLoad(force) {
+  if (HS.busy) return;
+  const need = [], seen = new Set();
+  S.assets.filter(isMkt).forEach(a => {
+    const k = pxKey(a); if (!k || seen.has(k)) return; seen.add(k);
+    const c = PXC[k];
+    if (!force && ((c && Date.now() - c.t < 20 * 36e5) || HS.tried[k])) return;
+    need.push([k, a]);
+  });
+  if (!need.length) return;
+  HS.busy = true; HS.msg = `กำลังดึงราคาย้อนหลัง 0/${need.length}`; HS.ver++;
+  let n = 0;
+  for (const [k, a] of need) {
+    HS.tried[k] = 1;
+    try { const r = await fetchHist(a); PXC[k] = { t: Date.now(), src: r.src, d: r.d }; delete HS.err[k]; }
+    catch (e) { HS.err[k] = String((e && e.message) || e); }
+    n++; HS.msg = `กำลังดึงราคาย้อนหลัง ${n}/${need.length}`; HS.ver++; drawHist();
+  }
+  savePX(); HS.busy = false; HS.msg = ''; HS.ver++; drawHist();
+}
+
+const HR = { '1M': 30, '3M': 91, '6M': 182, '1Y': 365, '3Y': 1095, '5Y': 1825 };
+function drawHist() {
+  if (S.tab !== 'ov') return;
+  if (!(S.collapsed && S.collapsed.hist)) histLoad();
+  const f = pickOne(S.histF || 'all'), rk = S.histR || '1Y';
+  const stack = f === 'all' && S.histMode === 'stack', estOn = f !== 'all' || S.histEst !== false;
+  const ofType = f === 'all' ? [] : S.assets.filter(a => a.type === f);
+  let A = f === 'all' ? S.assets : ofType;
+  if (f !== 'all' && S.histA && S.histA !== 'all') { const x = A.find(a => a.id === S.histA); if (x) A = [x]; }
+  const sig = JSON.stringify([f, S.histA, rk, stack, estOn, S.set.ccy, S.set.thb, S.hide, HS.ver, HS.busy, S.assets.map(a => [a.id, a.type, a.qty, a.cost, a.buyDate, a.cur].join(':'))]);
+  if (sig === HS.sig) return; HS.sig = sig;
+
+  // controls
+  $('#histChips').innerHTML = chipsHTML(f, false);
+  $('#histAssetRow').style.display = ofType.length > 1 ? 'flex' : 'none';
+  $('#histAsset').innerHTML = '<option value="all">ทุกรายการในหมวด</option>' + ofType.map(a => `<option value="${esc(a.id)}"${a.id === S.histA ? ' selected' : ''}>${esc(a.name)}</option>`).join('');
+  $$('#histRange button').forEach(b => b.classList.toggle('on', b.dataset.r === rk));
+  $('#histOpts').innerHTML = (f === 'all' ? `<button type="button" class="chip${stack ? ' on' : ''}" data-o="stack">แยกตามประเภท</button><button type="button" class="chip${estOn ? ' on' : ''}" data-o="est">รวมรายการประมาณการ</button>` : '') + '<button type="button" class="chip" data-o="ref">↻ อัปเดตราคา</button>';
+
+  // value functions per asset
+  const nowD = eday(Date.now()), fns = [], miss = [];
+  A.forEach(a => {
+    const bd = a.buyDate ? dayOf(a.buyDate) : null, cv = curV(a);
+    if (isMkt(a)) {
+      const c = PXC[pxKey(a)];
+      if (!c || !c.d || !c.d.length) { miss.push(a); return; }
+      const s = c.d, qty = +a.qty || 0; let i = 0;
+      fns.push({ a, st: Math.max(bd == null ? s[0][0] : bd, s[0][0]), f: D => {
+        if (bd != null && D < bd) return 0;
+        if (D >= nowD) return cv;
+        while (i + 1 < s.length && s[i + 1][0] <= D) i++;
+        return s[i][0] <= D ? qty * s[i][1] : 0;
+      } });
+    } else if (estOn) {
+      const c = costT(a);
+      fns.push({ a, st: bd, est: true, f: D => {
+        if (bd != null && D < bd) return 0;
+        if (bd == null || c == null || nowD <= bd) return cv;
+        return c + (cv - c) * Math.min(1, (D - bd) / (nowD - bd));
+      } });
+    }
+  });
+
+  // date axis
+  const sts = fns.map(x => x.st).filter(x => x != null);
+  let start = rk === 'MAX' ? (sts.length ? Math.min(...sts) : nowD - 365) : nowD - HR[rk];
+  start = Math.max(start, nowD - 3650); if (nowD - start < 7) start = nowD - 7;
+  const step = Math.max(1, Math.ceil((nowD - start) / 360)), ds = [];
+  for (let d = start; d < nowD; d += step) ds.push(d); ds.push(nowD);
+
+  const keys = KS.filter(k => fns.some(x => x.a.type === k)), byT = {}; keys.forEach(k => byT[k] = ds.map(() => 0));
+  let T = ds.map(() => 0);
+  fns.forEach(x => ds.forEach((D, j) => { const v = x.f(D); T[j] += v; byT[x.a.type][j] += v; }));
+  const k0 = Math.max(0, T.findIndex(v => v > 0));
+  const dd = ds.slice(k0); T = T.slice(k0); keys.forEach(k => byT[k] = byT[k].slice(k0));
+  if (!T.length) { T = []; }
+
+  // summary
+  if (T.length) {
+    const v0 = T[0], v1 = T[T.length - 1], d = v1 - v0;
+    $('#histSum').innerHTML = `<div><small>ล่าสุด</small><b>${money(v1, { dp: 0 })}</b></div><div><small>เทียบต้นช่วง</small><b class="${cls(d)}">${money(d, { sign: 1, dp: 0 })}${v0 > 0 ? ' (' + pct(d / v0 * 100) + ')' : ''}</b></div><div><small>สูงสุดในช่วง</small><b>${money(Math.max(...T), { dp: 0 })}</b></div>`;
+  } else $('#histSum').innerHTML = '';
+
+  // note
+  const nm = [];
+  if (HS.busy) nm.push(HS.msg);
+  const srcs = [...new Set(fns.filter(x => !x.est).map(x => (PXC[pxKey(x.a)] || {}).src).filter(Boolean))];
+  if (srcs.length) nm.push('แหล่งราคา: ' + srcs.join(', '));
+  if (miss.length && !HS.busy) {
+    const errs = [...new Set(miss.map(a => HS.err[pxKey(a)]).filter(Boolean).map(m => /fetch|network|load failed/i.test(m) ? 'เชื่อมต่อแหล่งราคาไม่ได้ — ลองเปิดไฟล์จากเครื่องหรือโฮสต์เอง' : m))];
+    nm.push(`ยังไม่มีราคาย้อนหลังของ ${miss.map(a => a.symbol || a.name).join(', ')}` + (errs.length ? ` (${errs.join('; ')})` : ''));
+    if (miss.some(a => a.type === 'stock') && !S.set.twelve) nm.push('หุ้นย้อนหลังหลายปี: ใส่ Twelve Data API key ในตั้งค่า');
+  }
+  if (fns.some(x => x.est)) nm.push('รายการ LEGO/กบข./ประกัน/อื่นๆ เป็นประมาณการ');
+  $('#histNote').textContent = nm.join(' • ');
+
+  // chart
+  const lab = iso => (rk === '1M' || rk === '3M' || rk === '6M') ? iso.slice(5) : iso.slice(0, 7);
+  const labels = dd.map(isoOf), color = f === 'all' ? '#818cf8' : TY[f].c;
+  let datasets;
+  if (stack) {
+    datasets = keys.map((k, i) => ({ label: TY[k].n, data: byT[k], borderColor: TY[k].c, backgroundColor: TY[k].c + 'cc', borderWidth: 1.5, fill: i === 0 ? 'origin' : '-1', tension: 0.25, pointRadius: 0 }));
+  } else {
+    const g = $('#cHist').getContext('2d').createLinearGradient(0, 0, 0, 210);
+    g.addColorStop(0, color + '59'); g.addColorStop(1, color + '00');
+    datasets = [{ label: 'มูลค่า', data: T, borderColor: color, borderWidth: 2.5, backgroundColor: g, fill: true, tension: 0.3, pointRadius: labels.length < 3 ? 4 : 0 }];
+  }
+  mk('cHist', {
+    type: 'line', data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: stack, position: 'bottom', labels: { color: '#e2e8f0', boxWidth: 10 } },
+        tooltip: { callbacks: { label: c => ' ' + c.dataset.label + ': ' + fm(c.raw), footer: it => stack ? 'รวม ' + fm(it.reduce((s, i) => s + i.raw, 0)) : '' } }
+      },
+      scales: {
+        x: { ...noGrid, ticks: { maxTicksLimit: 6, maxRotation: 0, callback(v) { return lab(this.getLabelForValue(v)); } } },
+        y: { ...yGrid, stacked: stack, ticks: { callback: fm } }
+      }
+    }
+  });
+}
+$('#histChips').onclick = e => { const b = e.target.closest('[data-k]'); if (!b) return; S.histF = b.dataset.k; S.histA = 'all'; save(); drawHist(); };
+$('#histAsset').onchange = e => { S.histA = e.target.value; save(); drawHist(); };
+$('#histRange').onclick = e => { const b = e.target.closest('button'); if (!b) return; S.histR = b.dataset.r; save(); drawHist(); };
+$('#histOpts').onclick = e => {
+  const b = e.target.closest('[data-o]'); if (!b) return; const o = b.dataset.o;
+  if (o === 'ref') { HS.tried = {}; histLoad(true); drawHist(); return; }
+  if (o === 'stack') S.histMode = S.histMode === 'stack' ? 'line' : 'stack'; else S.histEst = S.histEst === false;
+  save(); drawHist();
+};
+
+// ---- Charts ----
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.font.family = "'Inter', 'Noto Sans Thai', sans-serif";
+Chart.defaults.font.size = 11;
+
+const PCT = {
+  id: 'pct',
+  afterDatasetsDraw(c) {
+    const m = c.getDatasetMeta(0), d = c.data.datasets[0].data, t = d.reduce((x, y) => x + y, 0), x = c.ctx, a = c.chartArea, cx = (a.left + a.right) / 2, cy = (a.top + a.bottom) / 2;
+    x.save(); x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.font = '700 12.5px Inter, sans-serif'; x.fillStyle = '#070A13';
+    m.data.forEach((arc, i) => { const p = d[i] / t * 100; if (p < 4.5) return; const q = arc.tooltipPosition(); x.fillText(p.toFixed(1) + '%', q.x, q.y); });
+    const ks = c.data.keys || [], si = ks.indexOf(S.allocSel), sk = si >= 0 ? ks[si] : null;
+    x.fillStyle = sk ? TY[sk].c : '#94a3b8'; x.font = '600 13px Inter, sans-serif'; x.fillText(sk ? TY[sk].n : 'พอร์ตรวม', cx, cy - 17);
+    x.fillStyle = '#f8fafc'; x.font = '800 17px Inter, sans-serif'; x.fillText(fm(sk ? d[si] : t), cx, cy + 4);
+    if (sk) { x.fillStyle = '#94a3b8'; x.font = '11.5px Inter, sans-serif'; x.fillText((d[si] / t * 100).toFixed(1) + '% ของพอร์ต', cx, cy + 24); }
+    x.restore();
+  }
+};
+
+function drawAlloc() {
+  const { by, cb, tot } = totals(), ks = KS.filter(k => by[k] > 0);
+  if (!ks.length || tot <= 0) { $('#allocLeg').innerHTML = ''; $('#allocDet').innerHTML = ''; return; }
+  const sel = ks.includes(S.allocSel) ? S.allocSel : null;
+  mk('cDon', {
+    type: 'doughnut', plugins: [PCT],
+    data: {
+      labels: ks.map(k => TY[k].n), keys: ks,
+      datasets: [{
+        data: ks.map(k => by[k]),
+        backgroundColor: ks.map(k => !sel || k === sel ? TY[k].c : TY[k].c + '44'),
+        borderWidth: 0, spacing: 3, borderRadius: 8,
+        offset: ks.map(k => k === sel ? 12 : 0), hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '66%', layout: { padding: 14 },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ' ' + fm(c.raw) } } },
+      onClick: (e, els) => { const k = els.length ? ks[els[0].index] : null; S.allocSel = (k && k !== S.allocSel) ? k : null; save(); drawAlloc(); }
+    }
+  });
+
+  $('#allocLeg').innerHTML = ks.map(k => {
+    const p = by[k] / tot * 100;
+    return `<div class="ar${k === sel ? ' on' : ''}" data-k="${k}" style="--k:${TY[k].c}"><span class="sw"></span><span class="an">${TY[k].n}</span><span class="ap">${p.toFixed(1)}%</span><b class="av">${money(by[k], { dp: 0 })}</b><i style="width:${p}%"></i></div>`;
+  }).join('');
+
+  if (!sel) { $('#allocDet').innerHTML = ''; return; }
+  const k = sel, v = by[k], c = cb[k], as = S.assets.filter(a => a.type === k).sort((a, b) => val(b) - val(a));
+  let g = 0, hasC = false; as.forEach(a => { const x = costT(a); if (x != null) { hasC = true; g += val(a) - x; } });
+  const ex = [];
+  if (k === 'lego') {
+    const th = {}; as.forEach(a => th[a.theme] = (th[a.theme] || 0) + val(a));
+    const t = Object.entries(th).sort((x, y) => y[1] - x[1])[0];
+    ex.push(`${as.length} ชุด`, `กำไร ${as.filter(a => costT(a) != null && gUSD(a) >= 0).length} ชุด`, `ได้ฟรี ${as.filter(a => costT(a) === 0).length} ชุด`);
+    if (t) ex.push(`ธีมใหญ่สุด ${esc(t[0])} ${(t[1] / v * 100).toFixed(0)}%`);
+  } else if (k === 'crypto' || k === 'gold' || k === 'stock') {
+    const d24 = as.reduce((s, a) => a.chg != null ? s + val(a) - val(a) / (1 + a.chg / 100) : s, 0);
+    ex.push(`${as.length} รายการ`); if (d24) ex.push(`24 ชม. <b class="${cls(d24)}">${money(d24, { sign: 1 })}</b>`);
+  } else if (k === 'gpf') {
+    const a0 = as[0]; ex.push(`${as.length} แผน`);
+    if (a0) ex.push(`เงินต้นของท่าน ${money((a0.ep || 0) / S.set.thb, { dp: 0 })}`, `เงินต้นภาครัฐ ${money((a0.gp || 0) / S.set.thb, { dp: 0 })}`, `ผลประโยชน์ ${money(v - c, { dp: 0 })}`);
+  } else if (k === 'insurance') { ex.push(`${as.length} กรมธรรม์`, 'ค่าตามที่กรอกเอง'); }
+  else ex.push(`${as.length} รายการ`);
+
+  const top = as.slice(0, 5).map(a => {
+    const p = val(a) / v * 100;
+    return `<div class="at" data-id="${a.id}"><div class="n">${esc(a.name)}</div><div class="av">${money(val(a), { dp: 0 })} <span class="mut">${p.toFixed(0)}%</span></div><div class="atb"><i style="width:${Math.max(p, 2)}%"></i></div></div>`;
+  }).join('');
+
+  $('#allocDet').innerHTML = `<div class="adp" style="--k:${TY[k].c}"><div class="adh"><b>${TY[k].n}</b><span>${(v / tot * 100).toFixed(1)}% ของพอร์ต</span></div>
+    <div class="ast"><div><small>มูลค่า</small><b>${money(v)}</b></div><div><small>ต้นทุน</small><b>${hasC ? money(c) : '–'}</b></div><div><small>กำไร/ขาดทุน</small><b class="${hasC ? cls(g) : 'mut'}">${hasC ? money(g, { sign: 1 }) + (c ? ' (' + pct(g / c * 100) + ')' : '') : '–'}</b></div></div>
+    <div class="aex">${ex.map(t => `<span>${t}</span>`).join('')}</div>${top}
+    ${as.length > 5 ? `<p class="hint">และอีก ${as.length - 5} รายการ</p>` : ''}
+    <button type="button" class="btn s" data-go="${k}">ดูทั้งหมดในแท็บ ${TY[k].n} →</button></div>`;
+}
+$('#allocLeg').onclick = e => { const r = e.target.closest('.ar'); if (!r) return; const k = r.dataset.k; S.allocSel = S.allocSel === k ? null : k; save(); drawAlloc(); };
+
+function mk(id, cfg) {
+  if (S.hide) { cfg.options = cfg.options || {}; cfg.options.plugins = cfg.options.plugins || {}; cfg.options.plugins.tooltip = { enabled: false }; }
+  if (ch[id]) ch[id].destroy();
+  ch[id] = new Chart($('#' + id).getContext('2d'), cfg);
+}
+const noGrid = { grid: { display: false }, border: { display: false } }, yGrid = { grid: { color: 'rgba(255,255,255,0.06)' }, border: { display: false } };
+const fm = v => S.hide ? '••••' : S.set.ccy === 'THB' ? '฿' + Math.round(v * S.set.thb).toLocaleString() : '$' + Math.round(v).toLocaleString();
+
+function totals() {
+  const by = {}, cb = {}; KS.forEach(k => { by[k] = 0; cb[k] = 0; });
+  let tot = 0, tc = 0, tg = 0, d24 = 0;
+  S.assets.forEach(a => {
+    const v = val(a), c = costT(a); tot += v; by[a.type] = (by[a.type] || 0) + v;
+    if (c != null) { tc += c; tg += v - c; cb[a.type] = (cb[a.type] || 0) + c; }
+    if (a.chg != null && (a.type === 'crypto' || a.type === 'gold' || a.type === 'stock') && !S.sim.on) d24 += v - v / (1 + a.chg / 100);
+  });
+  return { by, cb, tot, tc, tg, d24 };
+}
+
+function recHist(tot) {
+  if (S.sim.on) return;
+  const d = today(), l = S.hist[S.hist.length - 1];
+  if (!l || l.date !== d) { S.hist.push({ date: d, value: tot }); if (S.hist.length > 60) S.hist.shift(); } else l.value = tot;
+}
+
+function renderOv() {
+  simOptions();
+  const { by, cb, tot, tc, tg, d24 } = totals(); recHist(tot);
+  $('#total').textContent = money(tot);
+  $('#simTag').style.display = S.sim.on ? 'inline' : 'none';
+  $('#gain').innerHTML = `<span class="${cls(tg)}" style="font-weight:700">${money(tg, { sign: 1 })}${tc ? ` (${pct(tg / tc * 100)})` : ''}</span> <span class="mut" style="font-size:12px">กำไรรวม (เฉพาะที่ระบุทุน)</span>`;
+  $('#chg24').innerHTML = d24 ? `Crypto/ทอง/หุ้น 24 ชม.: <span class="${cls(d24)}" style="font-weight:600">${money(d24, { sign: 1 })}</span>` : '';
+
+  const ks = KS.filter(k => by[k] > 0);
+  $('#bar').innerHTML = ks.map(k => `<div style="width:${by[k] / tot * 100}%;background:${TY[k].c}"></div>`).join('');
+  $('#legend').innerHTML = ks.map(k => `<div><span class="sw" style="background:${TY[k].c}"></span><span>${TY[k].n}</span><b style="margin-left:auto">${money(by[k], { dp: 0 })}</b><span class="mut" style="width:52px;text-align:right">${(by[k] / tot * 100).toFixed(1)}%</span></div>`).join('');
+
+  $('#kpis').innerHTML = ['crypto', 'gold', 'stock', 'lego', 'insurance', 'gpf', 'other'].map(k => {
+    const as = S.assets.filter(a => a.type === k), a0 = as[0]; let sub = '';
+    if (k === 'lego' || k === 'stock' || k === 'gpf' || k === 'other') { const g = by[k] - cb[k]; sub = cb[k] ? `<span class="${cls(g)}">${money(g, { sign: 1, dp: 0 })}</span>` : '<span class="mut">–</span>'; }
+    else sub = a0 && a0.chg != null ? `<span class="${cls(a0.chg)}">${pct(a0.chg)} 24h</span>` : '<span class="mut">–</span>';
+    return `<div class="kpi" data-go="${k}" style="--k:${TY[k].c}"><small>${TY[k].i} ${TY[k].n}</small><b>${money(by[k], { dp: 0 })}</b>${sub}</div>`;
+  }).join('');
+
+  renderInfographics(tot, by);
+
+  drawHist();
+
+  drawAlloc();
+
+  const tf = pickOne(S.themeF || 'all');
+  $('#themeChips').innerHTML = chipsHTML(tf, false);
+  $('#themeTitle').textContent = tf === 'all' ? 'แยกตามประเภท: ทุน vs มูลค่า' : tf === 'lego' ? 'LEGO แยกตามธีม: ทุน vs มูลค่า' : `${TY[tf].n} แยกตามรายการ: ทุน vs มูลค่า`;
+  const tsrc = tf === 'all' ? S.assets : S.assets.filter(a => a.type === tf);
+  const gk = tf === 'all' ? (a => TY[a.type].n) : tf === 'lego' ? (a => a.theme || 'ไม่ระบุธีม') : (a => a.name);
+  const tm = {}; let noCost = 0;
+  tsrc.forEach(a => {
+    const key = gk(a), t = tm[key] || (tm[key] = { v: 0, c: 0, ty: a.type }), c = costT(a);
+    t.v += val(a); if (c == null) noCost++; else t.c += c;
+  });
+  const th = Object.entries(tm).sort((x, y) => y[1].v - x[1].v).slice(0, 8);
+  $('#themeWrap').style.height = Math.max(190, th.length * 38 + 70) + 'px';
+  $('#themeNote').textContent = noCost ? `${noCost} รายการไม่ได้ระบุต้นทุน จึงไม่นับในแท่งต้นทุน` : '';
+  mk('cTheme', {
+    type: 'bar',
+    data: {
+      labels: th.map(x => x[0].length > 16 ? x[0].slice(0, 15) + '…' : x[0]),
+      datasets: [
+        { label: 'ต้นทุน', data: th.map(x => x[1].c), backgroundColor: '#334155', borderRadius: 6 },
+        { label: 'มูลค่าปัจจุบัน', data: th.map(x => x[1].v), backgroundColor: th.map(x => TY[x[1].ty].c), borderRadius: 6 }
+      ]
+    },
+    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#e2e8f0', boxWidth: 10 } }, tooltip: { callbacks: { label: c => ' ' + c.dataset.label + ': ' + fm(c.raw) } } }, scales: { x: { ...yGrid, ticks: { callback: fm } }, y: noGrid } }
+  });
+
+  const topN = S.topN || 5;
+  const vf = pickOne(S.topVF || 'all'), rf = pickOne(S.topRF || 'all');
+  $('#topVChips').innerHTML = chipsHTML(vf, false);
+  $('#topRChips').innerHTML = chipsHTML(rf, false);
+  $('#topVTitle').textContent = `มูลค่าสูงสุด ${topN} อันดับ${vf === 'all' ? '' : ' • ' + TY[vf].n}`;
+  $('#topRTitle').textContent = `ผลตอบแทน ${topN} อันดับ${rf === 'all' ? '' : ' • ' + TY[rf].n}`;
+  $('#btnTopN').textContent = topN === 5 ? 'ดู 10 อันดับ' : 'ย่อ 5 อันดับ';
+
+  const LV = vf === 'all' ? S.assets : S.assets.filter(a => a.type === vf);
+  const LR = rf === 'all' ? S.assets : S.assets.filter(a => a.type === rf);
+  $('#topV').innerHTML = [...LV].sort((a, b) => val(b) - val(a)).slice(0, topN)
+    .map((a, idx) => mini(a, idx, `<b>${money(val(a))}</b><div>${gainTxt(a)}</div>`)).join('');
+
+  $$('#roiSeg button').forEach(b => b.classList.toggle('on', b.dataset.m === (S.roiMode || 'best')));
+  const W = S.roiMode === 'worst';
+  $('#topR').innerHTML = [...LR].filter(a => costT(a) != null && (costT(a) > 0 || !W))
+    .sort((a, b) => W ? gPct(a) - gPct(b) : gPct(b) - gPct(a)).slice(0, topN)
+    .map((a, idx) => mini(a, idx, `<b>${costT(a) === 0 ? 'ฟรี' : val(a) / costT(a) >= 2 ? (val(a) / costT(a)).toFixed(1) + 'x' : pct(gPct(a) * 100)}</b><div class="${cls(gUSD(a))}">${money(gUSD(a), { sign: 1 })}</div>`)).join('') || '<p class="hint">ไม่มีรายการที่ระบุต้นทุนในหมวดนี้</p>';
+}
+
+function renderList() {
+  const f = S.tab, q = $('#q').value.trim().toLowerCase(), pf = S.pfFilter || 'all';
+  const so = { value: (x, y) => val(y) - val(x), gain: (x, y) => cmp(gUSD(x), gUSD(y)), gainp: (x, y) => cmp(gPct(x), gPct(y)), days: (x, y) => (days(y) || 0) - (days(x) || 0), name: (x, y) => x.name.localeCompare(y.name) };
+  const inTab = S.assets.filter(a => a.type === f);
+  const isL = f === 'lego';
+  $('#themeRow').style.display = isL ? 'flex' : 'none';
+  if (isL) {
+    const ts = ['ALL', ...new Set(inTab.map(a => a.theme).filter(Boolean))].sort();
+    $('#themeSel').innerHTML = ts.map(t => `<option value="${esc(t)}"${t === S.theme ? ' selected' : ''}>${t === 'ALL' ? 'ทุกธีม' : esc(t)}</option>`).join('');
+  }
+  $$('#profitChips button').forEach(b => b.classList.toggle('on', b.dataset.pf === pf));
+
+  const L = inTab.filter(a => {
+    if (isL && S.theme !== 'ALL' && a.theme !== S.theme) return false;
+    if (q && ![a.name, a.symbol, a.setNum, a.theme].join(' ').toLowerCase().includes(q)) return false;
+    const c = costT(a);
+    if (pf === 'profit') return c != null && val(a) > c;
+    if (pf === 'loss') return c != null && val(a) < c;
+    if (pf === 'free') return c === 0;
+    return true;
+  }).sort(so[S.sort] || so.value);
+
+  let v = 0, c = 0, g = 0; L.forEach(a => { v += val(a); const x = costT(a); if (x != null) { c += x; g += val(a) - x; } });
+  $('#catsum').innerHTML = `${TY[f].n} <b>${L.length}</b> รายการ<br><b style="color:#fff;font-size:15px">${money(v)}</b> • ทุน ${money(c)} • <span class="${cls(g)}">${money(g, { sign: 1 })}${c ? ` (${pct(g / c * 100)})` : ''}</span>`;
+  const el = $('#list'); el.className = 'list ' + S.layout;
+  el.innerHTML = L.map(card).join('') || '<p class="mut" style="text-align:center;padding:28px">ไม่พบรายการที่ตรงเงื่อนไข — กดปุ่ม + เพื่อเพิ่มสินทรัพย์</p>';
+  $$('#vc button').forEach(b => b.classList.toggle('on', b.dataset.l === S.layout));
+}
+
+function render() {
+  recPh();
+  syncSections();
+  syncNavVis();
+  $$('.nav button').forEach(b => b.classList.toggle('on', b.dataset.t === S.tab));
+  const ov = S.tab === 'ov';
+  $('#vOv').style.display = ov ? 'block' : 'none';
+  $('#vList').style.display = ov ? 'none' : 'block';
+  if (!ov) HS.sig = null;
+  ov ? renderOv() : renderList();
+}
+function go(t) { S.tab = t; save(); render(); scrollTo(0, 0); }
+
+// ---- Live Data & WebSocket ----
+const setLive = on => { wsOn = on; $('#dot').classList.toggle('on', on); };
+const status = m => $('#status').textContent = m || (wsOn ? 'Live' : 'Ready');
+const schedule = () => { if (rT) return; rT = setTimeout(() => { rT = null; render(); save(); }, 1000); };
+
+async function refreshCG() {
+  const ids = [...new Set(S.assets.filter(a => (a.type === 'crypto' || a.type === 'gold') && a.cgId).map(a => a.cgId))];
+  if (!ids.length) return;
+  try {
+    const d = await (await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=' + ids.join(','))).json();
+    if (!Array.isArray(d)) return;
+    d.forEach(c => S.assets.filter(a => a.cgId === c.id).forEach(a => {
+      if (!(a.binance && wsOn)) { a.price = c.current_price; a.chg = c.price_change_percentage_24h; }
+      a.autoImg = c.image;
+    }));
+  } catch (_) {}
+}
+async function refreshFX() {
+  if (Date.now() - (S.fxAt || 0) < 36e5) return;
+  try {
+    const d = await (await fetch('https://open.er-api.com/v6/latest/USD')).json();
+    if (d.rates && d.rates.THB) { S.set.thb = d.rates.THB; S.fxAt = Date.now(); }
+  } catch (_) {}
+}
+async function refreshStocks() {
+  const k = S.set.finnhub; if (!k) return;
+  for (const a of S.assets.filter(a => a.type === 'stock' && a.symbol && !(a.binance && wsOn))) {
+    try {
+      const d = await (await fetch('https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(a.symbol) + '&token=' + k)).json();
+      if (d && d.c) { a.pc = d.pc; if (!(fhWS && fhWS.readyState === 1)) { a.price = d.c; a.chg = d.dp; } }
+    } catch (_) {}
+  }
+}
+async function refreshBNF() {
+  for (const a of S.assets.filter(a => a.binance && a.bnf)) {
+    try {
+      const d = await (await fetch('https://fapi.binance.com/fapi/v1/ticker/24hr?symbol=' + a.binance)).json();
+      if (d && d.lastPrice) { a.price = +d.lastPrice; a.chg = +d.priceChangePercent; }
+    } catch (_) {}
+  }
+}
+async function refreshAll() {
+  status('Updating…');
+  await Promise.allSettled([refreshCG(), refreshFX(), refreshStocks(), refreshBNF(), ...S.assets.map(autoPair)]);
+  S.updated = Date.now(); save(); render(); status();
+}
+
+let fhWS = null;
+async function autoPair(a) {
+  if (a.type !== 'stock' || !a.symbol || a.binance || a.noBn) return;
+  try {
+    const r = await fetch('https://fapi.binance.com/fapi/v1/ticker/price?symbol=' + a.symbol + 'USDT');
+    if (r.ok) { const j = await r.json(); if (j && j.price) { a.binance = a.symbol + 'USDT'; a.bnf = 1; a.price = +j.price; connectWS(); } }
+    else a.noBn = 1;
+  } catch (_) {}
+}
+function connectFH(force) {
+  const k = S.set.finnhub, syms = [...new Set(S.assets.filter(a => a.type === 'stock' && a.symbol && !a.binance).map(a => a.symbol))], key = k + '|' + syms.join(',');
+  if (!force && fhWS && fhWS._key === key && fhWS.readyState < 2) return;
+  if (fhWS) { fhWS.onclose = null; fhWS.close(); fhWS = null; }
+  if (!k || !syms.length) { upd(); return; }
+  let w; try { w = new WebSocket('wss://ws.finnhub.io?token=' + encodeURIComponent(k)); } catch (_) { return; }
+  w._key = key; fhWS = w;
+  w.onopen = () => { syms.forEach(x => w.send(JSON.stringify({ type: 'subscribe', symbol: x }))); upd(); };
+  w.onmessage = e => {
+    let m; try { m = JSON.parse(e.data); } catch (_) { return; }
+    if (m.type !== 'trade' || !m.data) return;
+    const last = {}; m.data.forEach(t => last[t.s] = t.p);
+    S.assets.forEach(a => { if (a.type === 'stock' && !a.binance && last[a.symbol] != null) { a.price = last[a.symbol]; if (a.pc) a.chg = (a.price - a.pc) / a.pc * 100; } });
+    S.updated = Date.now(); schedule();
+  };
+  w.onclose = () => { if (fhWS === w) fhWS = null; upd(); setTimeout(() => connectFH(), 5000); };
+}
+let wss = {};
+function upd() { setLive(Object.values(wss).some(w => w.readyState === 1) || !!(fhWS && fhWS.readyState === 1)); status(); }
+function connectWS(force) {
+  setTimeout(() => connectFH(force), 0);
+  [['spot', 'wss://stream.binance.com:9443/stream?streams=', a => a.binance && !a.bnf], ['fut', 'wss://fstream.binance.com/stream?streams=', a => a.binance && a.bnf]].forEach(([k, url, f]) => {
+    const syms = [...new Set(S.assets.filter(f).map(a => a.binance.toLowerCase()))], key = syms.join('/'), w = wss[k];
+    if (!force && w && w._key === key && w.readyState < 2) return;
+    if (w) { w.onclose = null; w.close(); delete wss[k]; }
+    if (!syms.length) { upd(); return; }
+    let n; try { n = new WebSocket(url + syms.map(x => x + '@ticker').join('/')); } catch (_) { return; }
+    n._key = key; wss[k] = n;
+    n.onopen = upd;
+    n.onmessage = e => {
+      const d = JSON.parse(e.data).data; if (!d) return;
+      S.assets.forEach(a => { if (a.binance && !!a.bnf === (k === 'fut') && a.binance.toUpperCase() === d.s) { a.price = +d.c; a.chg = +d.P; } });
+      S.updated = Date.now(); if (!wsOn) upd(); schedule();
+    };
+    n.onclose = () => { if (wss[k] === n) delete wss[k]; upd(); setTimeout(() => connectWS(), 4000); };
+  });
+}
+
+// ---- Sheets & Detail ----
+const openSheet = id => { $('#bg').style.display = 'block'; $(id).classList.add('open'); };
+const closeSheets = () => { $('#bg').style.display = 'none'; $$('.sheet').forEach(s => s.classList.remove('open')); $('#cgRes').innerHTML = ''; };
+
+function recPh() {
+  const d = today(); S.ph = S.ph || {};
+  S.assets.forEach(a => {
+    const h = S.ph[a.id] || (S.ph[a.id] = []), l = h[h.length - 1], p = +a.price || 0;
+    if (!l || l[0] !== d) h.push([d, p]); else l[1] = p;
+    if (h.length > 1500) h.shift();
+  });
+}
+
+async function openDetail(id) {
+  const a = S.assets.find(x => x.id === id); if (!a) return;
+  const { tot } = totals();
+  const c = costT(a), d = days(a), v = val(a);
+  const weight = tot > 0 ? (v / tot * 100).toFixed(2) : '0.00';
+
+  $('#dT').textContent = a.name + (a.symbol ? ' (' + a.symbol + ')' : '');
+  $('#dC').innerHTML = `
+    <div class="det-grid">
+      <div class="det-item"><small>มูลค่าปัจจุบัน</small><b>${money(v)}</b></div>
+      <div class="det-item"><small>สัดส่วนต่อพอร์ตรวม</small><b>${weight}%</b></div>
+      <div class="det-item"><small>ต้นทุนรวม</small><b>${c == null ? 'ไม่ระบุ' : c === 0 ? 'ฟรี' : money(c)}</b></div>
+      <div class="det-item"><small>กำไร / ขาดทุน</small><b>${gainTxt(a)}</b></div>
+    </div>
+    <div class="mut" style="font-size:12.5px">
+      จำนวน: <b>${fq(a.qty)}</b> หน่วย × <b>${money(px(a), { dp: unitDp(px(a)) })}</b>
+      ${d != null ? ` • ถือมา <b>${d.toLocaleString()}</b> วัน` : ''}
+      ${a.theme ? `<br>ธีม: ${esc(a.theme)} • รหัสเซ็ต: ${esc(a.setNum)}` : ''}
+      ${a.type === 'gpf' ? `<br>เงินต้นของท่าน ${money((a.ep || 0) / S.set.thb)} • ภาครัฐ ${money((a.gp || 0) / S.set.thb)}` : ''}
+      ${a.note ? `<br>โน้ต: ${esc(a.note)}` : ''}
+    </div>`;
+
+  $('#toEdit').onclick = () => { closeSheets(); openEdit(id); };
+  openSheet('#shDet');
+
+  let labels = [], data = [], cfg;
+  if ((a.type === 'crypto' || a.type === 'gold') && a.cgId) {
+    try {
+      const r = await (await fetch(`https://api.coingecko.com/api/v3/coins/${a.cgId}/market_chart?vs_currency=usd&days=30`)).json();
+      if (r.prices) { labels = r.prices.map(p => new Date(p[0]).toLocaleDateString()); data = r.prices.map(p => p[1]); }
+    } catch (_) {}
+  }
+  if (data.length) {
+    cfg = { type: 'line', data: { labels, datasets: [{ data, borderColor: '#34d399', backgroundColor: 'rgba(52, 211, 153, 0.14)', fill: true, tension: 0.35, pointRadius: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ...noGrid, ticks: { maxTicksLimit: 5 } }, y: yGrid } } };
+  } else {
+    cfg = { type: 'bar', data: { labels: ['ต้นทุน', 'มูลค่าปัจจุบัน'], datasets: [{ data: [c || 0, v], backgroundColor: ['#334155', '#818cf8'], borderRadius: 8 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: noGrid, y: yGrid } } };
+  }
+  mk('cAsset', cfg);
+}
+
+// ---- Add / Edit Form ----
+const f = $('#f'), E = k => f.elements.namedItem(k);
+const FIELDS = ['type', 'name', 'symbol', 'cgId', 'binance', 'setNum', 'theme', 'pieces', 'qty', 'cost', 'price', 'buyDate', 'img', 'note', 'ep', 'gp'];
+
+function setType(t) {
+  const ins = t === 'insurance';
+  $('#lQty').textContent = t === 'gpf' ? 'จำนวนหน่วย' : 'จำนวน';
+  $('#lCost').textContent = ins ? 'เบี้ยที่จ่ายสะสม (บาท)' : 'ราคาทุน / หน่วย ($)';
+  $('#lPrice').textContent = t === 'gpf' ? 'มูลค่าต่อหน่วย NAV (บาท)' : ins ? 'มูลค่า (บาท) เช่น มูลค่าเวนคืน / ทุนประกัน' : 'ราคาปัจจุบัน / หน่วย ($)';
+  $$('#f [data-t]').forEach(el => el.style.display = el.dataset.t.split(' ').includes(t) ? '' : 'none');
+  updBE();
+}
+const updBE = () => $('#beLk').href = 'https://www.brickeconomy.com/search?query=' + encodeURIComponent(E('setNum').value || E('name').value);
+
+function openEdit(id) {
+  const a = id ? S.assets.find(x => x.id === id) : { type: S.tab !== 'ov' ? S.tab : 'lego', qty: 1, buyDate: today() };
+  editing = id || null;
+  FIELDS.forEach(k => E(k).value = a[k] ?? '');
+  setType(a.type);
+  $('#del').style.display = id ? 'block' : 'none';
+  $('#del').dataset.confirm = '';
+  $('#del').textContent = 'ลบรายการนี้';
+  $('#eT').textContent = id ? 'แก้ไขสินทรัพย์' : 'เพิ่มสินทรัพย์ใหม่';
+  openSheet('#shEdit');
+}
+
+f.onsubmit = e => {
+  e.preventDefault();
+  const o = {}; FIELDS.forEach(k => o[k] = E(k).value.trim());
+  o.qty = num(o.qty) ?? 0; o.price = num(o.price) ?? 0; o.pieces = num(o.pieces) ?? ''; o.cost = num(o.cost);
+  o.symbol = o.symbol.toUpperCase(); o.binance = o.binance.toUpperCase(); o.bnf = (o.type === 'stock' && o.binance) ? 1 : '';
+  o.cur = (o.type === 'insurance' || o.type === 'gpf') ? 'THB' : '';
+  o.ep = num(o.ep); o.gp = num(o.gp); o.noBn = '';
+  if (o.type === 'gpf') o.cost = ((o.ep || 0) + (o.gp || 0)) || null;
+  if (!o.name) o.name = o.symbol || o.setNum || 'ไม่มีชื่อ';
+  if (editing) Object.assign(S.assets.find(x => x.id === editing), o);
+  else S.assets.push({ id: uid(), ...o });
+  save(); closeSheets(); render(); connectWS(); refreshAll();
+  toast('บันทึกข้อมูลเรียบร้อย');
+};
+E('type').onchange = e => setType(e.target.value);
+E('setNum').oninput = updBE;
+
+// Two-tap safe delete (no confirm() dialog)
+$('#del').onclick = () => {
+  const btn = $('#del');
+  if (btn.dataset.confirm !== '1') {
+    btn.dataset.confirm = '1';
+    btn.textContent = 'แตะอีกครั้งเพื่อยืนยันการลบ';
+    return;
+  }
+  S.assets = S.assets.filter(a => a.id !== editing);
+  save(); closeSheets(); render(); connectWS();
+  toast('ลบรายการแล้ว');
+};
+
+// CoinGecko & Stock Search
+let stT = null, bnfList = null;
+async function bnfSymbols() {
+  if (bnfList) return bnfList;
+  try {
+    const d = await (await fetch('https://fapi.binance.com/fapi/v1/exchangeInfo')).json();
+    bnfList = (d.symbols || []).filter(x => x.status === 'TRADING' && x.quoteAsset === 'USDT' && x.contractType === 'PERPETUAL' && String(x.underlyingType || '').toUpperCase() !== 'COIN').map(x => ({ pair: x.symbol, base: x.baseAsset }));
+  } catch (_) { bnfList = []; }
+  return bnfList;
+}
+async function stockSearch() {
+  const box = $('#cgRes'), q = (E('symbol').value || E('name').value).trim().toUpperCase();
+  if (!q) { box.innerHTML = ''; return; }
+  box.innerHTML = '<p class="hint">กำลังค้นหา…</p>';
+  const L = await bnfSymbols(), map = {}; L.forEach(x => map[x.base] = x.pair);
+  const out = [], seen = new Set(), k = S.set.finnhub;
+  if (k) {
+    try {
+      const d = await (await fetch('https://finnhub.io/api/v1/search?q=' + encodeURIComponent(q) + '&token=' + k)).json();
+      (d.result || []).filter(x => x.symbol && !x.symbol.includes('.')).slice(0, 8).forEach(x => { seen.add(x.symbol); out.push({ sym: x.symbol, name: x.description, pair: map[x.symbol] || '' }); });
+    } catch (_) {}
+  }
+  L.filter(x => x.base.toUpperCase().includes(q) && !seen.has(x.base)).slice(0, 6).forEach(x => { seen.add(x.base); out.push({ sym: x.base, name: '', pair: x.pair }); });
+  if (/^[A-Z]{1,6}$/.test(q) && !out.some(x => x.sym === q && x.pair)) {
+    try {
+      const r = await fetch('https://fapi.binance.com/fapi/v1/ticker/price?symbol=' + q + 'USDT');
+      if (r.ok) { const j = await r.json(); if (j && j.price) { const i = out.findIndex(x => x.sym === q); if (i >= 0) out[i].pair = q + 'USDT'; else out.unshift({ sym: q, name: '', pair: q + 'USDT' }); } }
+    } catch (_) {}
+  }
+  box.innerHTML = out.slice(0, 10).map(x => `<button type="button" data-stock="${esc(x.sym)}" data-name="${esc(x.name)}" data-pair="${esc(x.pair)}"><b>${esc(x.sym)}</b> <span class="mut">${esc(x.name)}</span> <span style="margin-left:auto;font-size:11px;color:${x.pair ? '#34d399' : '#94a3b8'}">${x.pair ? '● สด (Binance)' : k ? 'อัปเดตทุก 60 วิ' : 'ใส่ราคาเอง'}</span></button>`).join('') || '<p class="hint">ไม่พบ ลองพิมพ์ ticker (เช่น TSLA) หรือใส่ Finnhub key ในตั้งค่า</p>';
+}
+E('symbol').addEventListener('input', () => { if (E('type').value !== 'stock') return; clearTimeout(stT); stT = setTimeout(stockSearch, 450); });
+$('#cgBtn').onclick = async () => {
+  if (E('type').value === 'stock') return stockSearch();
+  const q = (E('symbol').value || E('name').value).trim(); if (!q) return;
+  const box = $('#cgRes'); box.innerHTML = '<p class="hint">กำลังค้นหา…</p>';
+  try {
+    const d = await (await fetch('https://api.coingecko.com/api/v3/search?query=' + encodeURIComponent(q))).json();
+    box.innerHTML = (d.coins || []).slice(0, 5).map(c => `<button type="button" data-id="${esc(c.id)}" data-sym="${esc(c.symbol)}" data-name="${esc(c.name)}"><img src="${esc(c.thumb)}" alt="">${esc(c.name)} <span class="mut">${esc(c.symbol)}</span></button>`).join('') || '<p class="hint">ไม่พบเหรียญ</p>';
+  } catch (_) { box.innerHTML = '<p class="hint">ค้นหาไม่สำเร็จ</p>'; }
+};
+$('#cgRes').onclick = async e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.stock) {
+    E('symbol').value = b.dataset.stock; if (!E('name').value) E('name').value = b.dataset.name || b.dataset.stock; E('binance').value = b.dataset.pair || '';
+    $('#cgRes').innerHTML = '<p class="hint">กำลังดึงราคา…</p>';
+    try {
+      if (b.dataset.pair) { const d = await (await fetch('https://fapi.binance.com/fapi/v1/ticker/price?symbol=' + b.dataset.pair)).json(); if (d && d.price) E('price').value = +d.price; }
+      else if (S.set.finnhub) { const d = await (await fetch('https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(b.dataset.stock) + '&token=' + S.set.finnhub)).json(); if (d && d.c) E('price').value = d.c; }
+    } catch (_) {}
+    $('#cgRes').innerHTML = ''; return;
+  }
+  E('cgId').value = b.dataset.id; E('symbol').value = b.dataset.sym.toUpperCase(); if (!E('name').value) E('name').value = b.dataset.name;
+  const pair = b.dataset.sym.toUpperCase() + 'USDT';
+  try {
+    const r = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=' + pair);
+    if (r.ok) { const j = await r.json(); E('binance').value = pair; if (!E('price').value) E('price').value = +j.price; } else E('binance').value = '';
+  } catch (_) {}
+  $('#cgRes').innerHTML = '';
+};
+
+// ---- Events & Controls ----
+$$('.nav button').forEach(b => b.onclick = () => go(b.dataset.t));
+document.body.addEventListener('click', e => {
+  const tog = e.target.closest('[data-tog]');
+  if (tog) {
+    const k = tog.dataset.tog;
+    S.collapsed = S.collapsed || {};
+    S.collapsed[k] = !S.collapsed[k];
+    save(); syncSections();
+    return;
+  }
+  const g = e.target.closest('[data-go]'); if (g) { go(g.dataset.go); return; }
+  const c = e.target.closest('.card,.mini,.at'); if (c && c.dataset.id) openDetail(c.dataset.id);
+});
+
+$('#btnNavTog').onclick = () => { S.hideNav = !S.hideNav; save(); syncNavVis(); toast(S.hideNav ? 'ซ่อนแถบเมนูด้านล่างแล้ว' : 'แสดงแถบเมนูด้านล่าง'); };
+$('#dockPill').onclick = () => { S.hideNav = false; save(); syncNavVis(); };
+
+const chipPick = (id, key, multi) => $(id).onclick = e => {
+  const b = e.target.closest('[data-k]'); if (!b) return; const k = b.dataset.k;
+  if (multi) {
+    let s = infoSel();
+    s = k === 'all' ? [] : s.includes(k) ? s.filter(x => x !== k) : [...s, k];
+    if (s.length === presentKeys().length) s = [];
+    S[key] = s;
+  } else S[key] = k;
+  save(); renderOv();
+};
+chipPick('#infoChips', 'infoSel', true);
+chipPick('#topVChips', 'topVF');
+chipPick('#topRChips', 'topRF');
+chipPick('#themeChips', 'themeF');
+$('#btnTopN').onclick = () => { S.topN = (S.topN || 5) === 5 ? 10 : 5; save(); renderOv(); };
+$('#profitChips').onclick = e => { const b = e.target.closest('[data-pf]'); if (!b) return; S.pfFilter = b.dataset.pf; save(); renderList(); };
+$('#vc').onclick = e => { const b = e.target.closest('button'); if (!b) return; S.layout = b.dataset.l; save(); renderList(); };
+$('#q').oninput = renderList;
+$('#sort').onchange = e => { S.sort = e.target.value; save(); renderList(); };
+$('#themeSel').onchange = e => { S.theme = e.target.value; save(); renderList(); };
+$('#ccySeg').onclick = e => { const b = e.target.closest('button'); if (!b) return; S.set.ccy = b.dataset.c; save(); syncCcy(); render(); };
+const syncCcy = () => $$('#ccySeg button').forEach(b => b.classList.toggle('on', b.dataset.c === S.set.ccy));
+$('#fab').onclick = () => openEdit();
+$('#bg').onclick = closeSheets;
+$$('[data-x]').forEach(b => b.onclick = closeSheets);
+$('#btnRef').onclick = () => { connectWS(true); refreshAll(); toast('กำลังอัปเดตราคาล่าสุด...'); };
+$('#btnSet').onclick = () => {
+  $('#fhKey').value = S.set.finnhub || ''; $('#tdKey').value = S.set.twelve || '';
+  $('#ccy').value = S.set.ccy;
+  $('#fxInfo').textContent = `อัตราแลกเปลี่ยนปัจจุบัน: 1 USD = ${(+S.set.thb).toFixed(2)} THB`;
+  $('#reset').dataset.confirm = '';
+  $('#reset').textContent = 'รีเซ็ตเป็นข้อมูลเริ่มต้น';
+  openSheet('#shSet');
+};
+$('#saveSet').onclick = () => { S.set.ccy = $('#ccy').value; S.set.finnhub = $('#fhKey').value.trim(); S.set.twelve = $('#tdKey').value.trim(); HS.tried = {}; save(); syncCcy(); closeSheets(); render(); connectWS(true); refreshAll(); toast('บันทึกการตั้งค่าแล้ว'); };
+
+$('#exp').onclick = () => {
+  const u = URL.createObjectURL(new Blob([JSON.stringify(S, null, 1)], { type: 'application/json' }));
+  const a = document.createElement('a'); a.href = u; a.download = `myport-${today()}.json`; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(u), 3000);
+  toast('ดาวน์โหลดไฟล์สำรองข้อมูลแล้ว');
+};
+$('#impBtn').onclick = () => $('#imp').click();
+$('#imp').onchange = async e => {
+  const file = e.target.files[0]; if (!file) return;
+  try {
+    const d = JSON.parse(await file.text()); if (!Array.isArray(d.assets)) throw 0;
+    S = Object.assign(dflt(), d); S.set = Object.assign({ ccy: 'USD', thb: 34.25 }, d.set || d.settings);
+    save(); closeSheets(); syncCcy(); go('ov'); connectWS(true); refreshAll();
+    toast('นำเข้าข้อมูลสำเร็จ');
+  } catch (_) { toast('ไฟล์ข้อมูลไม่ถูกต้อง'); }
+  e.target.value = '';
+};
+
+$('#reset').onclick = () => {
+  const btn = $('#reset');
+  if (btn.dataset.confirm !== '1') {
+    btn.dataset.confirm = '1';
+    btn.textContent = 'แตะอีกครั้งเพื่อยืนยันการรีเซ็ตทั้งหมด';
+    return;
+  }
+  try { localStorage.removeItem(LS); } catch (_) {}
+  S = load(); save(); closeSheets(); syncCcy(); go('ov'); connectWS(true); refreshAll();
+  toast('รีเซ็ตข้อมูลกลับเป็นค่าเริ่มต้นแล้ว');
+};
+
+// Simulator
+function simSync() { simList(); $('#simOn').checked = S.sim.on; }
+function simOptions() {
+  const sel = $('#simAsset'), SA = S.assets.filter(a => !['lego', 'insurance', 'gpf'].includes(a.type)), key = SA.map(a => a.id + a.name).join('|');
+  if (sel.dataset.k === key) return; const cur = sel.value; sel.dataset.k = key;
+  sel.innerHTML = KS.filter(k => SA.some(a => a.type === k)).map(k => `<optgroup label="${TY[k].n}">` + SA.filter(a => a.type === k).map(a => `<option value="${a.id}">${esc(a.name)}${a.symbol ? ' (' + esc(a.symbol) + ')' : ''}</option>`).join('') + '</optgroup>').join('');
+  if (cur) sel.value = cur;
+}
+function simList() {
+  simOptions();
+  const p = S.sim.p || {};
+  $('#simRows').innerHTML = Object.keys(p).map(id => {
+    const a = S.assets.find(x => x.id === id); if (!a || a.type === 'lego' || a.type === 'insurance' || a.type === 'gpf') return '';
+    return `<div class="sr"><div><div class="n">${esc(a.name)}</div><div class="s">ปัจจุบัน ${money(a.price, { dp: unitDp(a.price) })}</div></div><input type="number" inputmode="decimal" step="any" value="${p[id]}" data-sp="${id}"><button type="button" class="ib" data-sd="${id}">✕</button></div>`;
+  }).join('') || '<p class="hint">เลือกสินทรัพย์ แล้วกรอกราคาเป้าหมายที่ต้องการจำลอง</p>';
+  $('#simOn').checked = S.sim.on;
+}
+$('#simAsset').onchange = () => { const a = S.assets.find(x => x.id === $('#simAsset').value); $('#simPrice').placeholder = a ? 'ปัจจุบัน ' + a.price : ''; };
+$('#simAdd').onclick = () => { const id = $('#simAsset').value, v = num($('#simPrice').value); if (!id || v == null) return; S.sim.p = S.sim.p || {}; S.sim.p[id] = v; S.sim.on = true; $('#simPrice').value = ''; simList(); save(); renderOv(); };
+$('#simRows').oninput = e => { const id = e.target.dataset.sp; if (!id) return; const v = num(e.target.value); if (v != null) { S.sim.p[id] = v; save(); renderOv(); } };
+$('#simRows').onclick = e => { const b = e.target.closest('[data-sd]'); if (!b) return; delete S.sim.p[b.dataset.sd]; simList(); save(); renderOv(); };
+$('#simOn').onchange = e => { S.sim.on = e.target.checked; save(); renderOv(); };
+$('#simAll').onclick = () => { S.sim.p = S.sim.p || {}; S.assets.filter(a => !['lego', 'insurance', 'gpf'].includes(a.type)).forEach(a => { if (S.sim.p[a.id] == null) S.sim.p[a.id] = +a.price || 0; }); S.sim.on = true; simList(); save(); renderOv(); };
+$('#roiSeg').onclick = e => { const b = e.target.closest('button'); if (!b) return; S.roiMode = b.dataset.m; save(); renderOv(); };
+$('#simReset').onclick = () => { S.sim = { on: false, p: {} }; simSync(); save(); renderOv(); };
+
+// Privacy Eye Mode
+const EYE = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.6 6.6A16 16 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 4.4-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+function syncEye() { $('#btnEye').innerHTML = S.hide ? EYE_OFF : EYE; $('#btnEye').classList.toggle('active-btn', !!S.hide); }
+$('#btnEye').onclick = () => { S.hide = !S.hide; save(); syncEye(); render(); };
+
+// Init
+syncCcy(); simSync(); $('#sort').value = S.sort; syncEye();
+if (!S.sim.on) $('#simBox').open = false;
+render(); connectWS(); refreshAll(); setInterval(refreshAll, 60000);
+</script>
+</body>
+</html>
