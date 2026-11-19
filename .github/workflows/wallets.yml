@@ -1,0 +1,24 @@
+name: Update wallets
+on:
+  schedule:
+    - cron: '*/20 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: wallets
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/wallets.mjs
+        env:
+          DEBANK_KEY: ${{ secrets.DEBANK_KEY }}
+      - run: |
+          git config user.name "wallet-bot"
+          git config user.email "wallet-bot@users.noreply.github.com"
+          git add wallets.json
+          git diff --cached --quiet || (git commit -m "update wallets" && git push)
