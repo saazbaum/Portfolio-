@@ -1,17 +1,18 @@
 import fs from 'node:fs';
 const W = [{ a: '0xbfe0b47d3155d85318aecdef21caa8adf80e88dc', n: 'Wallet 1' }, { a: '0x5152bee7840e3a6261034e7fecaf8ffbff5cb6ee', n: 'Wallet 2' }];
-const BS = { ETH: ['eth.blockscout.com', 'ETH'], Base: ['base.blockscout.com', 'ETH'], Ink: ['explorer.inkonchain.com', 'ETH'], Optimism: ['optimism.blockscout.com', 'ETH'], Arbitrum: ['arbitrum.blockscout.com', 'ETH'], Polygon: ['polygon.blockscout.com', 'POL'], Gnosis: ['gnosis.blockscout.com', 'xDAI'], zkSync: ['zksync.blockscout.com', 'ETH'], Scroll: ['scroll.blockscout.com', 'ETH'], Blast: ['blast.blockscout.com', 'ETH'], Linea: ['explorer.linea.build', 'ETH'], Celo: ['celo.blockscout.com', 'CELO'], Soneium: ['soneium.blockscout.com', 'ETH'] };
+const BS = { ETH: ['eth.blockscout.com', 'ETH'], Base: ['base.blockscout.com', 'ETH'], Ink: ['explorer.inkonchain.com', 'ETH'], Optimism: ['optimism.blockscout.com', 'ETH'], Arbitrum: ['arbitrum.blockscout.com', 'ETH'], Polygon: ['polygon.blockscout.com', 'POL'], Gnosis: ['gnosis.blockscout.com', 'xDAI'], zkSync: ['zksync.blockscout.com', 'ETH'], Scroll: ['scroll.blockscout.com', 'ETH'], Linea: ['explorer.linea.build', 'ETH'], Celo: ['celo.blockscout.com', 'CELO'], Soneium: ['soneium.blockscout.com', 'ETH'] };
 const prev = fs.existsSync('wallets.json') ? JSON.parse(fs.readFileSync('wallets.json', 'utf8')) : null;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const log = [];
-async function J(url, opt) {
-  for (let i = 0; i < 2; i++) {
-    const r = await fetch(url, { ...opt, signal: AbortSignal.timeout(20000) });
-    if (r.status === 429) { await sleep(2000); continue; }
+const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15';
+async function J(url, opt = {}) {
+  for (let i = 0; i < 3; i++) {
+    const r = await fetch(url, { ...opt, headers: { 'user-agent': UA, accept: 'application/json', ...(opt.headers || {}) }, signal: AbortSignal.timeout(40000) });
+    if (r.status === 429 || r.status === 403) { await sleep(4000 * (i + 1)); continue; }
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }
-  throw new Error('HTTP 429');
+  throw new Error('HTTP 403/429 (โดนจำกัดโควตา)');
 }
 async function debank(w) {
   const d = await J('https://pro-openapi.debank.com/v1/user/all_token_list?is_all=false&id=' + w.a, { headers: { AccessKey: process.env.DEBANK_KEY } });
@@ -37,13 +38,14 @@ for (const w of W) {
     try { items = await debank(w); log.push(`${w.n} DeBank: ${items.length}`); } catch (e) { log.push(`${w.n} DeBank: ${e.message}`); }
   }
   if (!items.length) {
-    await Promise.all(Object.entries(BS).map(async ([ch, [h, nat]]) => {
+    const q = Object.entries(BS);
+    await Promise.all([0, 1].map(async () => { while (q.length) { const [ch, [h, nat]] = q.shift();
       try { const r = await chain(w, ch, h, nat); items.push(...r); log.push(`${w.n} ${ch}: ${r.length}`); }
       catch (e) {
         const old = prev?.wallets?.find(x => x.a === w.a)?.items.filter(x => x.ch === ch) || [];
         items.push(...old); log.push(`${w.n} ${ch}: ${e.message} (ใช้ค่าเดิม ${old.length})`);
       }
-    }));
+      await sleep(1000); } }));
   }
   wallets.push({ a: w.a, n: w.n, items });
 }
