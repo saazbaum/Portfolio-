@@ -1,13 +1,13 @@
 import fs from 'node:fs';
 const W = [{ a: '0xbfe0b47d3155d85318aecdef21caa8adf80e88dc', n: 'Wallet 1' }, { a: '0x5152bee7840e3a6261034e7fecaf8ffbff5cb6ee', n: 'Wallet 2' }];
-const BS = { ETH: ['eth.blockscout.com', 'ETH'], Base: ['base.blockscout.com', 'ETH'], Optimism: ['optimism.blockscout.com', 'ETH'], Arbitrum: ['arbitrum.blockscout.com', 'ETH'], Polygon: ['polygon.blockscout.com', 'POL'] };
+const BS = { ETH: ['eth.blockscout.com', 'ETH'], Base: ['base.blockscout.com', 'ETH'], Ink: ['explorer.inkonchain.com', 'ETH'], Optimism: ['optimism.blockscout.com', 'ETH'], Arbitrum: ['arbitrum.blockscout.com', 'ETH'], Polygon: ['polygon.blockscout.com', 'POL'], Gnosis: ['gnosis.blockscout.com', 'xDAI'], zkSync: ['zksync.blockscout.com', 'ETH'], Scroll: ['scroll.blockscout.com', 'ETH'], Blast: ['blast.blockscout.com', 'ETH'], Linea: ['explorer.linea.build', 'ETH'], Celo: ['celo.blockscout.com', 'CELO'], Soneium: ['soneium.blockscout.com', 'ETH'] };
 const prev = fs.existsSync('wallets.json') ? JSON.parse(fs.readFileSync('wallets.json', 'utf8')) : null;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const log = [];
 async function J(url, opt) {
-  for (let i = 0; i < 3; i++) {
-    const r = await fetch(url, opt);
-    if (r.status === 429) { await sleep(3000 * (i + 1)); continue; }
+  for (let i = 0; i < 2; i++) {
+    const r = await fetch(url, { ...opt, signal: AbortSignal.timeout(20000) });
+    if (r.status === 429) { await sleep(2000); continue; }
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }
@@ -37,14 +37,13 @@ for (const w of W) {
     try { items = await debank(w); log.push(`${w.n} DeBank: ${items.length}`); } catch (e) { log.push(`${w.n} DeBank: ${e.message}`); }
   }
   if (!items.length) {
-    for (const [ch, [h, nat]] of Object.entries(BS)) {
+    await Promise.all(Object.entries(BS).map(async ([ch, [h, nat]]) => {
       try { const r = await chain(w, ch, h, nat); items.push(...r); log.push(`${w.n} ${ch}: ${r.length}`); }
       catch (e) {
         const old = prev?.wallets?.find(x => x.a === w.a)?.items.filter(x => x.ch === ch) || [];
         items.push(...old); log.push(`${w.n} ${ch}: ${e.message} (ใช้ค่าเดิม ${old.length})`);
       }
-      await sleep(800);
-    }
+    }));
   }
   wallets.push({ a: w.a, n: w.n, items });
 }
