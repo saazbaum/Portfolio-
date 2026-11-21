@@ -1737,7 +1737,7 @@ const cashSeed = () => [
   { id: uid(), type: 'cash', sub: 'บัญชีกระแสรายวัน', inst: 'KBank (K PLUS)', name: 'บัญชีกระแสรายวัน KBank', qty: 1, cost: null, price: 2000, cur: 'THB' }
 ];
 const dflt = () => ({
-  momMig: 1, loanMig: 1, goldMig: 1, insMig: 1, gpfMig: 1, stkMig: 1, othMig: 1, cashMig: 1,
+  mig1121: 1, momMig: 1, loanMig: 1, goldMig: 1, insMig: 1, gpfMig: 1, stkMig: 1, othMig: 1, cashMig: 1,
   assets: [...seed(), insSeed(), gpfSeed(), ...stkSeed(), ...cashSeed(), othSeed()],
   hist: [], set: { ccy: 'USD', thb: 34.25, avatar: IMG.av, pname: 'Millions 💵🍀' }, imgMig: 1,
   tab: 'ov', sort: 'value', layout: 'v', theme: 'ALL', pfFilter: 'all',
@@ -1752,6 +1752,15 @@ function load() {
       if (!s.imgMig) { s.assets.forEach(a => { if (a.img) return; if (a.type === 'insurance') a.img = IMG.ins; else if (a.type === 'gpf') a.img = IMG.gpf; else if (a.type === 'other' && /glock/i.test(a.name)) a.img = IMG.oth; }); s.set = s.set || {}; s.set.avatar = IMG.av; s.set.pname = 'Millions 💵🍀'; s.imgMig = 1; }
       if (!s.loanMig) { s.assets.push(loanSeed()); s.loanMig = 1; }
       if (!s.momMig) { s.assets.push(momSeed()); s.momMig = 1; }
+      if (!s.mig1121) {
+        const A = s.assets;
+        const setCash = (re, v, name, inst) => { const a = A.find(x => x.type === 'cash' && re.test((x.name || '') + ' ' + (x.inst || ''))); if (a) a.price = v; else A.push({ id: uid(), type: 'cash', sub: 'บัญชีออมทรัพย์', inst, name, qty: 1, cur: 'THB', price: v }); };
+        setCash(/กรุงไทย|krungthai|ktb/i, 5000, 'เงินสด กรุงไทย', 'กรุงไทย (Krungthai NEXT)');
+        setCash(/กสิกร|k\s*plus|kplus|kbank/i, 2000, 'K PLUS', 'KBank (K PLUS)');
+        A.filter(a => a.type === 'crypto' && /^ethfi$/i.test(a.symbol || '')).forEach(a => { a.qty = 13000; if (a.wk) a.qtyOv = 13000; });
+        A.push({ id: uid(), type: 'crypto', symbol: 'BTC', name: 'Bitcoin (ซื้อ 21 พ.ย.)', cgId: 'bitcoin', binance: 'BTCUSDT', qty: 0, cost: null, price: 0, buyDate: '2026-11-21', pend: { thb: 1000, ts: Date.UTC(2026, 10, 21, 5, 0, 0) } });
+        s.mig1121 = 1;
+      }
       if (!s.goldMig) { const x = s.assets.find(a => a.type === 'gold' && a.symbol === 'XAUT'); s.assets = s.assets.filter(a => !(a.type === 'gold' && a.symbol === 'XAUT')); if (!s.assets.some(a => a.type === 'gold')) s.assets.push(goldSeed(x ? +x.qty : 1.5)); s.goldMig = 1; }
       if (!s.insMig) { s.assets.push(insSeed()); s.insMig = 1; }
       if (!s.gpfMig) { s.assets.push(gpfSeed()); s.gpfMig = 1; }
@@ -2579,7 +2588,7 @@ async function refreshBNF() {
 }
 async function refreshAll() {
   status('Updating…'); refreshNews();
-  await Promise.allSettled([refreshCG(), refreshFX(), refreshStocks(), refreshBNF(), refreshGold(), refreshGPF(), refreshBTC(), syncWallets(), ...S.assets.map(autoPair)]);
+  await Promise.allSettled([refreshCG(), refreshFX(), refreshStocks(), refreshBNF(), refreshGold(), refreshGPF(), refreshBTC(), resolvePend(), syncWallets(), ...S.assets.map(autoPair)]);
   S.updated = Date.now(); save(); render(); status();
 }
 
@@ -2710,6 +2719,14 @@ $('#gaAdd').onclick = () => {
 };
 $('#gaList').onclick = e => { const b = e.target.closest('[data-ga]'); if (!b) return; S.gal.splice(+b.dataset.ga, 1); save(); listGA(); };
 
+async function resolvePend() {
+  for (const a of S.assets.filter(x => x.pend)) {
+    try {
+      const d = await (await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=' + a.pend.ts + '&limit=1')).json();
+      if (Array.isArray(d) && d[0] && Math.abs(d[0][0] - a.pend.ts) < 6e4) { const p = +d[0][1]; a.cost = p; a.price = p; a.qty = +(a.pend.thb / S.set.thb / p).toFixed(8); delete a.pend; save(); }
+    } catch (_) {}
+  }
+}
 async function refreshBTC() { try { const d = await (await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT')).json(); if (+d.price > 0) S.set.btc = +d.price; } catch (_) {} }
 async function refreshGPF(force) {
   const gs = S.assets.filter(a => a.type === 'gpf'); if (!gs.length) return;
@@ -2953,7 +2970,7 @@ async function syncWallets(force) {
         const wk = [w.a, x.ch, x.id].join('|').toLowerCase(); seen.add(wk);
         let a = S.assets.find(z => z.wk === wk);
         if (!a) { a = { id: uid(), type: 'crypto', wk, wallet: w.a, cost: null }; S.assets.push(a); }
-        Object.assign(a, { symbol: (x.sym || '').toUpperCase(), name: (x.name || x.sym) + ' · ' + x.ch + ' · ' + w.n, qty: x.amt, price: x.price, autoImg: x.logo || a.autoImg });
+        Object.assign(a, { symbol: (x.sym || '').toUpperCase(), name: (x.name || x.sym) + ' · ' + x.ch + ' · ' + w.n, qty: a.qtyOv ?? x.amt, price: x.price, autoImg: x.logo || a.autoImg });
       });
     }
     if (ok === WAL.length) S.assets = S.assets.filter(a => !a.wk || seen.has(a.wk));
