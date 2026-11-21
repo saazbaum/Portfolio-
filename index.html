@@ -2904,7 +2904,7 @@ applyTheme();
 
 // ---- Wallets (EVM) ----
 const WAL = [{ a: '0xbfe0b47d3155d85318aecdef21caa8adf80e88dc', n: 'Wallet 1' }, { a: '0x5152bee7840e3a6261034e7fecaf8ffbff5cb6ee', n: 'Wallet 2' }];
-const BS = { ETH: ['eth.blockscout.com', 'ETH'], Base: ['base.blockscout.com', 'ETH'], Ink: ['explorer.inkonchain.com', 'ETH'], Optimism: ['optimism.blockscout.com', 'ETH'], Arbitrum: ['arbitrum.blockscout.com', 'ETH'], Polygon: ['polygon.blockscout.com', 'POL'], Gnosis: ['gnosis.blockscout.com', 'xDAI'], zkSync: ['zksync.blockscout.com', 'ETH'], Scroll: ['scroll.blockscout.com', 'ETH'], Blast: ['blast.blockscout.com', 'ETH'], Linea: ['explorer.linea.build', 'ETH'], Celo: ['celo.blockscout.com', 'CELO'], Soneium: ['soneium.blockscout.com', 'ETH'] };
+const BS = { ETH: ['eth.blockscout.com', 'ETH'], Base: ['base.blockscout.com', 'ETH'], Ink: ['explorer.inkonchain.com', 'ETH'], Optimism: ['optimism.blockscout.com', 'ETH'], Arbitrum: ['arbitrum.blockscout.com', 'ETH'], Polygon: ['polygon.blockscout.com', 'POL'], Gnosis: ['gnosis.blockscout.com', 'xDAI'], zkSync: ['zksync.blockscout.com', 'ETH'], Scroll: ['scroll.blockscout.com', 'ETH'], Linea: ['explorer.linea.build', 'ETH'], Celo: ['celo.blockscout.com', 'CELO'], Soneium: ['soneium.blockscout.com', 'ETH'] };
 let walBusy = 0;
 let walJ = null;
 async function loadWalJson() {
@@ -2916,9 +2916,9 @@ async function loadWalJson() {
 }
 async function walFetch(w) {
   const out = [], D = S.walDbg;
-  const j = walJ && walJ.wallets.find(x => x.a.toLowerCase() === w.a.toLowerCase());
-  if (j && j.items.length) { D.push(`${w.n}: จากไฟล์ wallets.json (${j.items.length} รายการ อัปเดต ${new Date(walJ.updated).toLocaleString('th-TH', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' })})`); return j.items; }
-  if (S.set.dbKey) {
+  const j = walJ && walJ.wallets.find(x => x.a.toLowerCase() === w.a.toLowerCase()), have = new Set();
+  if (j && j.items.length) { D.push(`${w.n}: จากไฟล์ wallets.json (${j.items.length} รายการ อัปเดต ${new Date(walJ.updated).toLocaleString('th-TH', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' })}) + เติม chain ที่ไฟล์ไม่มีด้วยการเรียกตรง`); out.push(...j.items); j.items.forEach(x => have.add(x.ch)); }
+  if (S.set.dbKey && !have.size) {
     try {
       const r = await fetch('https://pro-openapi.debank.com/v1/user/all_token_list?is_all=false&id=' + w.a, { headers: { AccessKey: S.set.dbKey } }), d = await r.json();
       if (Array.isArray(d)) {
@@ -2929,7 +2929,7 @@ async function walFetch(w) {
       D.push(`${w.n} DeBank: HTTP ${r.status} ${JSON.stringify(d).slice(0, 90)}`);
     } catch (er) { D.push(`${w.n} DeBank: ${er.message} (อาจติด CORS/เครือข่าย)`); }
   }
-  await Promise.allSettled(Object.entries(BS).map(async ([ch, [h, nat]]) => {
+  await Promise.allSettled(Object.entries(BS).filter(([c]) => !have.has(c)).map(async ([ch, [h, nat]]) => {
     const J = u => fetch('https://' + h + '/api/v2/addresses/' + w.a + u).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
     let ad = null, tb = null, er = '';
     try { [ad, tb] = await Promise.all([J('').catch(x => { er = x.message; return null; }), J('/token-balances').catch(x => { er = x.message; return null; })]); } catch (x) { er = x.message; }
