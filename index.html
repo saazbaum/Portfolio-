@@ -2904,7 +2904,7 @@ applyTheme();
 
 // ---- Wallets (EVM) ----
 const WAL = [{ a: '0xbfe0b47d3155d85318aecdef21caa8adf80e88dc', n: 'Wallet 1' }, { a: '0x5152bee7840e3a6261034e7fecaf8ffbff5cb6ee', n: 'Wallet 2' }];
-const BS = { ETH: ['eth.blockscout.com', 'ETH'], Base: ['base.blockscout.com', 'ETH'], Optimism: ['optimism.blockscout.com', 'ETH'], Arbitrum: ['arbitrum.blockscout.com', 'ETH'], Polygon: ['polygon.blockscout.com', 'POL'] };
+const BS = { ETH: ['eth.blockscout.com', 'ETH'], Base: ['base.blockscout.com', 'ETH'], Ink: ['explorer.inkonchain.com', 'ETH'], Optimism: ['optimism.blockscout.com', 'ETH'], Arbitrum: ['arbitrum.blockscout.com', 'ETH'], Polygon: ['polygon.blockscout.com', 'POL'], Gnosis: ['gnosis.blockscout.com', 'xDAI'], zkSync: ['zksync.blockscout.com', 'ETH'], Scroll: ['scroll.blockscout.com', 'ETH'], Blast: ['blast.blockscout.com', 'ETH'], Linea: ['explorer.linea.build', 'ETH'], Celo: ['celo.blockscout.com', 'CELO'], Soneium: ['soneium.blockscout.com', 'ETH'] };
 let walBusy = 0;
 let walJ = null;
 async function loadWalJson() {
