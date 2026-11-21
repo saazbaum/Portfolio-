@@ -1,11 +1,11 @@
-name: Update wallets
+name: Update data
 on:
   schedule:
     - cron: '*/20 * * * *'
   workflow_dispatch:
 permissions:
   contents: write
-concurrency: wallets
+concurrency: data
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -17,8 +17,9 @@ jobs:
       - run: node scripts/wallets.mjs
         env:
           DEBANK_KEY: ${{ secrets.DEBANK_KEY }}
+      - run: node scripts/gpf.mjs
       - run: |
-          git config user.name "wallet-bot"
-          git config user.email "wallet-bot@users.noreply.github.com"
-          git add wallets.json
-          git diff --cached --quiet || (git commit -m "update wallets" && git push)
+          git config user.name "data-bot"
+          git config user.email "data-bot@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || (git commit -m "update data" && git push)
