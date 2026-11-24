@@ -9,6 +9,7 @@ concurrency: data
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -17,9 +18,8 @@ jobs:
       - run: node scripts/wallets.mjs
         env:
           DEBANK_KEY: ${{ secrets.DEBANK_KEY }}
-      - run: node scripts/gpf.mjs
       - run: |
           git config user.name "data-bot"
           git config user.email "data-bot@users.noreply.github.com"
-          git add -A
-          git diff --cached --quiet || (git commit -m "update data" && git push)
+          git add wallets.json
+          git diff --cached --quiet || (git commit -m "update data" && git pull --rebase -q && git push)
