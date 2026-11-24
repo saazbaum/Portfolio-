@@ -2731,14 +2731,20 @@ async function refreshBTC() { try { const d = await (await fetch('https://api.bi
 async function refreshGPF(force) {
   const gs = S.assets.filter(a => a.type === 'gpf'); if (!gs.length) return;
   if (!force && Date.now() - (S.gpfAt || 0) < 18e5) return; S.gpfAt = Date.now();
+  const why = [];
   try {
     const b = Date.now() / 3e5 | 0;
     for (const u of ['https://raw.githubusercontent.com/saazbaum/Portfolio-/main/gpf.json?t=' + b, 'gpf.json?t=' + b]) {
-      const r = await fetch(u).catch(() => null); if (!r || !r.ok) continue; const j = await r.json(); let ok = 0;
-      gs.forEach(a => { const kw = ((a.name.match(/\((.*?)\)/) || [])[1] || a.name).replace(/^แผน/, '').trim(), v = j.plans && j.plans[kw]; if (v && Math.abs(v / a.price - 1) < 0.15) { a.price = v; a.navDate = j.date || ''; ok++; } });
-      if (ok) { S.gpfMsg = 'NAV จากไฟล์ gpf.json (บอทอัปเดต ' + new Date(j.updated).toLocaleString('th-TH', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' }) + ')'; return; }
+      const r = await fetch(u).catch(() => null); if (!r || !r.ok) { why.push('อ่านไฟล์ไม่ได้ (' + (r ? 'HTTP ' + r.status : 'เชื่อมต่อไม่ได้') + ')'); continue; }
+      const j = await r.json(); let ok = 0;
+      gs.forEach(a => {
+        const kw = ((a.name.match(/\((.*?)\)/) || [])[1] || a.name).replace(/^แผน/, '').trim(), v = j.plans && j.plans[kw];
+        if (!v) why.push('ไฟล์ไม่มีแผน "' + kw + '"'); else if (Math.abs(v / a.price - 1) > 0.4) why.push('ค่า ' + v + ' ต่างจาก ' + a.price + ' เกิน 40%'); else { a.price = v; a.navDate = j.date || ''; ok++; }
+      });
+      if (ok) { S.gpfMsg = 'NAV จากไฟล์ gpf.json' + (j.date ? ' ข้อมูล ณ ' + j.date : '') + ' (บอทอัปเดต ' + new Date(j.updated).toLocaleString('th-TH', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' }) + ')'; return; }
     }
-  } catch (_) {}
+  } catch (er) { why.push(er.message); }
+  S.gpfWhy = why.join(' | ');
   const U = 'https://www.gpf.or.th/thai2019/About/main.php?page=memberfund&lang=th&menu=statistic', px0 = S.set.gpfProxy;
   const urls = [px0 && (px0.includes('{url}') ? px0.replace('{url}', encodeURIComponent(U)) : px0 + encodeURIComponent(U)), 'https://api.allorigins.win/raw?url=' + encodeURIComponent(U), 'https://corsproxy.io/?' + encodeURIComponent(U)].filter(Boolean);
   for (const u of urls) {
@@ -2757,7 +2763,7 @@ async function refreshGPF(force) {
       if (ok) { S.gpfMsg = 'ดึง NAV อัตโนมัติสำเร็จ ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }); return; }
     } catch (_) {}
   }
-  S.gpfMsg = 'ดึง NAV อัตโนมัติไม่สำเร็จ (เว็บ กบข. กันการดึงข้อมูลจากเบราว์เซอร์) — แก้ NAV เองที่ปุ่มแก้ไข หรือใส่ Proxy ในตั้งค่า'; S.gpfAt = Date.now() - 12e5;
+  S.gpfMsg = (S.gpfWhy ? 'ไฟล์ gpf.json ใช้ไม่ได้: ' + S.gpfWhy + ' • ' : '') + 'ดึง NAV อัตโนมัติไม่สำเร็จ (เว็บ กบข. กันการดึงข้อมูลจากเบราว์เซอร์) — แก้ NAV เองที่ปุ่มแก้ไข หรือใส่ Proxy ในตั้งค่า'; S.gpfAt = Date.now() - 12e5;
 }
 function renderGpf() {
   const P = $('#gpfPanel'), a = S.assets.find(x => x.type === 'gpf'), on = S.tab === 'gpf' && a; P.style.display = on ? '' : 'none'; if (!on) return;
