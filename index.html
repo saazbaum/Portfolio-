@@ -1737,7 +1737,7 @@ const cashSeed = () => [
   { id: uid(), type: 'cash', sub: 'บัญชีกระแสรายวัน', inst: 'KBank (K PLUS)', name: 'บัญชีกระแสรายวัน KBank', qty: 1, cost: null, price: 2000, cur: 'THB' }
 ];
 const dflt = () => ({
-  mig1121: 1, momMig: 1, loanMig: 1, goldMig: 1, insMig: 1, gpfMig: 1, stkMig: 1, othMig: 1, cashMig: 1,
+  mig1125: 1, mig1121: 1, momMig: 1, loanMig: 1, goldMig: 1, insMig: 1, gpfMig: 1, stkMig: 1, othMig: 1, cashMig: 1,
   assets: [...seed(), insSeed(), gpfSeed(), ...stkSeed(), ...cashSeed(), othSeed()],
   hist: [], set: { ccy: 'USD', thb: 34.25, avatar: IMG.av, pname: 'Millions 💵🍀' }, imgMig: 1,
   tab: 'ov', sort: 'value', layout: 'v', theme: 'ALL', pfFilter: 'all',
@@ -1760,6 +1760,18 @@ function load() {
         A.filter(a => a.type === 'crypto' && /^ethfi$/i.test(a.symbol || '')).forEach(a => { a.qty = 13000; if (a.wk) a.qtyOv = 13000; });
         A.push({ id: uid(), type: 'crypto', symbol: 'BTC', name: 'Bitcoin (ซื้อ 21 พ.ย.)', cgId: 'bitcoin', binance: 'BTCUSDT', qty: 0, cost: null, price: 0, buyDate: '2026-11-21', pend: { thb: 1000, ts: Date.UTC(2026, 10, 21, 5, 0, 0) } });
         s.mig1121 = 1;
+      }
+      if (!s.mig1125) {
+        const A = s.assets;
+        const setCash = (re, v, name, inst) => { const a = A.find(x => x.type === 'cash' && re.test((x.name || '') + ' ' + (x.inst || ''))); if (a) a.price = v; else A.push({ id: uid(), type: 'cash', sub: 'บัญชีออมทรัพย์', inst, name, qty: 1, cur: 'THB', price: v }); };
+        setCash(/กรุงไทย|krungthai|ktb/i, 10000, 'เงินสด กรุงไทย', 'กรุงไทย (Krungthai NEXT)');
+        setCash(/กสิกร|k\s*plus|kplus|kbank/i, 6000, 'K PLUS', 'KBank (K PLUS)');
+        const Q = { SPCX: 0.00447, MSTR: 0.0219, AAPL: 0.0003 };
+        A.filter(a => a.type === 'stock' && Q[(a.symbol || '').toUpperCase()] != null).forEach(a => { a.qty = Q[a.symbol.toUpperCase()]; });
+        const add = { thb: 5000, ts: Date.UTC(2026, 10, 25, 0, 0, 0) }, b = A.find(x => x.type === 'crypto' && !x.wk && (x.symbol || '').toUpperCase() === 'BTC');
+        if (b) (b.pendAdd = b.pendAdd || []).push(add);
+        else A.push({ id: uid(), type: 'crypto', symbol: 'BTC', name: 'Bitcoin (ซื้อ 25 พ.ย.)', cgId: 'bitcoin', binance: 'BTCUSDT', qty: 0, cost: null, price: 0, buyDate: '2026-11-25', pend: add });
+        s.mig1125 = 1;
       }
       if (!s.goldMig) { const x = s.assets.find(a => a.type === 'gold' && a.symbol === 'XAUT'); s.assets = s.assets.filter(a => !(a.type === 'gold' && a.symbol === 'XAUT')); if (!s.assets.some(a => a.type === 'gold')) s.assets.push(goldSeed(x ? +x.qty : 1.5)); s.goldMig = 1; }
       if (!s.insMig) { s.assets.push(insSeed()); s.insMig = 1; }
@@ -2720,10 +2732,20 @@ $('#gaAdd').onclick = () => {
 $('#gaList').onclick = e => { const b = e.target.closest('[data-ga]'); if (!b) return; S.gal.splice(+b.dataset.ga, 1); save(); listGA(); };
 
 async function resolvePend() {
-  for (const a of S.assets.filter(x => x.pend)) {
+  const at = async ts => { const d = await (await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=' + ts + '&limit=1')).json(); return Array.isArray(d) && d[0] && Math.abs(d[0][0] - ts) < 6e4 ? +d[0][1] : null; };
+  for (const a of S.assets) {
     try {
-      const d = await (await fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1m&startTime=' + a.pend.ts + '&limit=1')).json();
-      if (Array.isArray(d) && d[0] && Math.abs(d[0][0] - a.pend.ts) < 6e4) { const p = +d[0][1]; a.cost = p; a.price = p; a.qty = +(a.pend.thb / S.set.thb / p).toFixed(8); delete a.pend; save(); }
+      if (a.pend) {
+        const p = await at(a.pend.ts);
+        if (p) { a.cost = p; a.price = p; a.qty = +(a.pend.thb / S.set.thb / p).toFixed(8); delete a.pend; save(); }
+      } else if (a.pendAdd && a.pendAdd.length) {
+        const x = a.pendAdd[0], p = await at(x.ts);
+        if (p) {
+          const q = +(x.thb / S.set.thb / p).toFixed(8), q0 = +a.qty || 0;
+          a.cost = a.cost != null && q0 > 0 ? (q0 * a.cost + q * p) / (q0 + q) : (q0 > 0 ? null : p);
+          a.qty = +(q0 + q).toFixed(8); a.pendAdd.shift(); if (!a.pendAdd.length) delete a.pendAdd; save();
+        }
+      }
     } catch (_) {}
   }
 }
