@@ -1737,7 +1737,7 @@ const cashSeed = () => [
   { id: uid(), type: 'cash', sub: 'บัญชีกระแสรายวัน', inst: 'KBank (K PLUS)', name: 'บัญชีกระแสรายวัน KBank', qty: 1, cost: null, price: 2000, cur: 'THB' }
 ];
 const dflt = () => ({
-  mig1126: 1, mig1125: 1, mig1121: 1, momMig: 1, loanMig: 1, goldMig: 1, insMig: 1, gpfMig: 1, stkMig: 1, othMig: 1, cashMig: 1,
+  mig1128: 1, mig1126: 1, mig1125: 1, mig1121: 1, momMig: 1, loanMig: 1, goldMig: 1, insMig: 1, gpfMig: 1, stkMig: 1, othMig: 1, cashMig: 1,
   assets: [...seed(), insSeed(), gpfSeed(), ...stkSeed(), ...cashSeed(), othSeed()],
   hist: [], set: { ccy: 'USD', thb: 34.25, avatar: IMG.av, pname: 'Millions 💵🍀' }, imgMig: 1,
   tab: 'ov', sort: 'value', layout: 'v', theme: 'ALL', pfFilter: 'all',
@@ -1780,6 +1780,13 @@ function load() {
         if (b) (b.pendAdd = b.pendAdd || []).push(add);
         else { const p = add.thb / ((s.set && s.set.thb) || 34.25) / add.qty; A.push({ id: uid(), type: 'crypto', symbol: 'BTC', name: 'Bitcoin', cgId: 'bitcoin', binance: 'BTCUSDT', qty: add.qty, cost: p, price: p, buyDate: '2026-11-26' }); }
         s.mig1126 = 1;
+      }
+      if (!s.mig1128) {
+        const A = s.assets, g = A.find(x => x.type === 'gpf');
+        if (g) Object.assign(g, { qty: 4939.8251, price: 35.5092, ep: 52905.00, gp: 88175.00, cost: 141080.00, navDate: '28/11/2569', note: 'ข้อมูล ณ 28/11/2569 • เงินสะสม 64,845.01 (ผลประโยชน์ 11,940.01) • เงินภาครัฐ 110,564.23 (ผลประโยชน์ 22,389.23) • ผลตอบแทนเฉลี่ย 5 ปี 5.55%/ปี • ตั้งแต่เริ่ม 6.09%/ปี' });
+        const k = A.find(x => x.type === 'cash' && /กสิกร|k\s*plus|kplus|kbank/i.test((x.name || '') + ' ' + (x.inst || '')));
+        if (k) k.price = 5000; else A.push({ id: uid(), type: 'cash', sub: 'บัญชีออมทรัพย์', inst: 'KBank (K PLUS)', name: 'K PLUS', qty: 1, cur: 'THB', price: 5000 });
+        s.mig1128 = 1;
       }
       if (!s.goldMig) { const x = s.assets.find(a => a.type === 'gold' && a.symbol === 'XAUT'); s.assets = s.assets.filter(a => !(a.type === 'gold' && a.symbol === 'XAUT')); if (!s.assets.some(a => a.type === 'gold')) s.assets.push(goldSeed(x ? +x.qty : 1.5)); s.goldMig = 1; }
       if (!s.insMig) { s.assets.push(insSeed()); s.insMig = 1; }
@@ -2766,11 +2773,12 @@ async function refreshGPF(force) {
     const b = Date.now() / 3e5 | 0;
     for (const u of ['https://raw.githubusercontent.com/saazbaum/Portfolio-/main/gpf.json?t=' + b, 'gpf.json?t=' + b]) {
       const r = await fetch(u).catch(() => null); if (!r || !r.ok) { why.push('อ่านไฟล์ไม่ได้ (' + (r ? 'HTTP ' + r.status : 'เชื่อมต่อไม่ได้') + ')'); continue; }
-      const j = await r.json(); let ok = 0;
+      const j = await r.json(); let ok = 0, stale = 0; const dk = s => { const m = String(s || '').match(/(\d+)\/(\d+)\/(\d+)/); return m ? m[3] * 1e4 + m[2] * 100 + +m[1] : 0; };
       gs.forEach(a => {
         const kw = ((a.name.match(/\((.*?)\)/) || [])[1] || a.name).replace(/^แผน/, '').trim(), v = j.plans && j.plans[kw];
-        if (!v) why.push('ไฟล์ไม่มีแผน "' + kw + '"'); else if (Math.abs(v / a.price - 1) > 0.4) why.push('ค่า ' + v + ' ต่างจาก ' + a.price + ' เกิน 40%'); else { a.price = v; a.navDate = j.date || ''; ok++; }
+        if (!v) why.push('ไฟล์ไม่มีแผน "' + kw + '"'); else if (Math.abs(v / a.price - 1) > 0.4) why.push('ค่า ' + v + ' ต่างจาก ' + a.price + ' เกิน 40%'); else if (j.date && a.navDate && dk(j.date) < dk(a.navDate)) { ok++; stale++; } else { a.price = v; a.navDate = j.date || ''; ok++; }
       });
+      if (ok && stale) { S.gpfMsg = 'ใช้ NAV ล่าสุดที่กรอกเอง (ไฟล์ gpf.json ยังเป็นข้อมูล ณ ' + j.date + ' เก่ากว่า) — เมื่อไฟล์ใหม่กว่าจะอัปเดตเอง'; return; }
       if (ok) { S.gpfMsg = 'NAV จากไฟล์ gpf.json' + (j.date ? ' ข้อมูล ณ ' + j.date : '') + ' (บอทอัปเดต ' + new Date(j.updated).toLocaleString('th-TH', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' }) + ')'; return; }
     }
   } catch (er) { why.push(er.message); }
